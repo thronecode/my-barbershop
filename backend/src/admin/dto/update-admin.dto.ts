@@ -6,5 +6,5 @@ export class UpdateAdminDto {
   @IsString()
   @IsStrongPassword()
   @IsNotEmpty()
-  readonly password: string;
+  password: string;
 }

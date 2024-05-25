@@ -36,10 +36,6 @@ export class BarbersController {
     description: 'Return the created barber',
     type: Barber,
   })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Barber already exists',
-  })
   async create(@Body() createBarberDto: CreateBarberDto) {
     if (await this.barbersService.findByName(createBarberDto.name)) {
       throw new BadRequestException('Barber already exists');
@@ -84,10 +80,6 @@ export class BarbersController {
     status: HttpStatus.OK,
     description: 'Return the updated barber',
     type: Barber,
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Name already exists in another barber',
   })
   async update(
     @Param('id') id: string,

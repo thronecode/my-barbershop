@@ -4,6 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Schema()
 export class Admin extends Document {
+  @Prop()
   @ApiProperty({ description: 'Id of the admin' })
   _id: string;
 

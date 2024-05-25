@@ -4,6 +4,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Schema()
 export class Barber extends Document {
+  @Prop()
   @ApiProperty({ description: 'Id of the barber' })
   _id: string;
 
@@ -13,11 +14,15 @@ export class Barber extends Document {
 
   @Prop()
   @ApiProperty({ description: 'Photo url of the barber' })
-  photo: string;
+  photo?: string;
 
   @Prop({ default: false })
   @ApiProperty({ description: 'Is the barber working today?' })
   is_working: boolean;
+
+  @Prop()
+  @ApiProperty({ description: 'Commission rate of the barber' })
+  commission_rate?: number;
 }
 
 export const BarberSchema = SchemaFactory.createForClass(Barber);

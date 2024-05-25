@@ -41,14 +41,6 @@ export class AdminController {
     description: 'Return the created admin',
     type: Admin,
   })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Invalid secret',
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Username already exists',
-  })
   async create(@Body() createAdminDto: CreateAdminDto): Promise<Admin> {
     if (createAdminDto.secret !== process.env.ADMIN_SECRET) {
       throw new UnauthorizedException('Invalid secret');
@@ -94,10 +86,6 @@ export class AdminController {
     status: HttpStatus.OK,
     description: 'Return the deleted admin',
     type: Admin,
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Cannot delete own account',
   })
   @UseGuards(JwtAuthGuard)
   async remove(
