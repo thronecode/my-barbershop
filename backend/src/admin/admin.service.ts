@@ -16,35 +16,61 @@ export class AdminService {
       ...createAdminDto,
       password: hashedPassword,
     });
-    return createdAdmin.save();
+    const result = createdAdmin.save();
+    result.then((admin) => {
+      admin.password = undefined;
+    });
+    return result;
   }
 
   async findAll(): Promise<Admin[]> {
-    return this.adminModel.find().exec();
+    const result = this.adminModel.find().exec();
+    result.then((admins) => {
+      admins.forEach((admin) => {
+        admin.password = undefined;
+      });
+    });
+    return result;
   }
 
   async findOne(id: string): Promise<Admin> {
-    return this.adminModel.findById(id).exec();
+    const result = this.adminModel.findById(id).exec();
+    result.then((admin) => {
+      admin.password = undefined;
+    });
+    return result;
   }
 
   async findByUsername(username: string): Promise<Admin> {
-    return this.adminModel.findOne({
+    const result = this.adminModel.findOne({
       username,
     });
+    result.then((admin) => {
+      admin.password = undefined;
+    });
+    return result;
   }
 
   async remove(id: string): Promise<Admin> {
-    return this.adminModel.findByIdAndDelete(id).exec();
+    const result = this.adminModel.findByIdAndDelete(id).exec();
+    result.then((admin) => {
+      admin.password = undefined;
+    });
+    return result;
   }
 
   async update(id: string, updateAdminDto: UpdateAdminDto): Promise<Admin> {
     const hashedPassword = await bcrypt.hash(updateAdminDto.password, 10);
-    return this.adminModel
+    const result = this.adminModel
       .findByIdAndUpdate(
         id,
         { ...updateAdminDto, password: hashedPassword },
         { new: true },
       )
       .exec();
+    result.then((admin) => {
+      admin.password = undefined;
+    });
+    return result;
   }
 }

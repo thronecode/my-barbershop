@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Admin } from '../admin/schemas/admin.schema';
-import * as process from 'node:process';
 import { LoginDto } from './dto/login.dto';
 
 @Injectable()
@@ -24,10 +23,10 @@ export class AuthService {
     return null;
   }
 
-  async getSessionData(token: string) {
-    const decoded = this.jwtService.decode(token) as { sub: string };
-    return this.adminModel.findById(decoded.sub).exec();
-  }
+  // async getSessionData(token: string) {
+  //   const decoded = this.jwtService.decode(token) as { sub: string };
+  //   return this.adminModel.findById(decoded.sub).exec();
+  // }
 
   async login(admin: Admin) {
     const payload = { username: admin.username, sub: admin._id };
