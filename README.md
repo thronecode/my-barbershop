@@ -74,7 +74,7 @@ erDiagram
         string name
         string description
         int duration
-        []string kinds
+        string kinds
         boolean is_combo
         float price
         float commission_rate
