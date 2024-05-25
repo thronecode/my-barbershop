@@ -12,7 +12,6 @@ async function bootstrap() {
     .setTitle('My Barbershop API')
     .setDescription('API for a My BarberShop application')
     .setVersion('0.0.1')
-    .addTag('my-barbershop')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/docs', app, document);

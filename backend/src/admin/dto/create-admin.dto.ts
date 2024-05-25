@@ -8,6 +8,7 @@ export class CreateAdminDto {
   readonly username: string;
 
   @ApiProperty({ description: 'Password of the admin' })
+  @IsString()
   @IsStrongPassword()
   @IsNotEmpty()
   readonly password: string;

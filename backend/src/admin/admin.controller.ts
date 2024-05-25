@@ -17,8 +17,13 @@ import { Admin } from './schemas/admin.schema';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 // import { AuthService } from '../auth/auth.service';
-import { GetJwtToken } from '../decorators/get-jwt-token.decorator';
-import { ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
+// import { GetJwtToken } from '../decorators/get-jwt-token.decorator';
+import {
+  ApiOperation,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('admin')
 export class AdminController {
@@ -29,6 +34,7 @@ export class AdminController {
 
   @Post()
   @ApiOperation({ summary: 'Create a new admin' })
+  @ApiTags('admin')
   @ApiProperty({ type: CreateAdminDto, description: 'Admin details' })
   @ApiResponse({
     status: HttpStatus.CREATED,
@@ -55,6 +61,7 @@ export class AdminController {
 
   @Get()
   @ApiOperation({ summary: 'Get all admins' })
+  @ApiTags('admin')
   @ApiResponse({
     status: HttpStatus.OK,
     description: 'Return all admins',
@@ -67,6 +74,7 @@ export class AdminController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get admin by id' })
+  @ApiTags('admin')
   @ApiProperty({ type: String, description: 'Admin id' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -80,6 +88,7 @@ export class AdminController {
 
   @Delete(':id')
   @ApiOperation({ summary: 'Delete admin by id' })
+  @ApiTags('admin')
   @ApiProperty({ type: String, description: 'Admin id' })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -93,7 +102,7 @@ export class AdminController {
   @UseGuards(JwtAuthGuard)
   async remove(
     @Param('id') id: string,
-    @GetJwtToken() token: string,
+    // @GetJwtToken() token: string,
   ): Promise<Admin> {
     // const adminSession = await this.authService.getSessionData(token);
     // if (adminSession._id === id) {
@@ -104,6 +113,7 @@ export class AdminController {
 
   @Put(':id')
   @ApiOperation({ summary: 'Update admin by id' })
+  @ApiTags('admin')
   @ApiProperty({ type: String, description: 'Admin id' })
   @ApiProperty({ type: UpdateAdminDto, description: 'Admin details' })
   @ApiResponse({

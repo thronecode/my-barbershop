@@ -7,7 +7,12 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { ApiOperation, ApiProperty, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiProperty,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('auth')
 export class AuthController {
@@ -15,6 +20,7 @@ export class AuthController {
 
   @Post('login')
   @ApiOperation({ summary: 'Login as an admin' })
+  @ApiTags('auth')
   @ApiProperty({ type: LoginDto, description: 'Login details' })
   @ApiResponse({
     status: HttpStatus.OK,
