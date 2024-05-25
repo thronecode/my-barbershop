@@ -23,11 +23,6 @@ export class AuthService {
     return null;
   }
 
-  async getSessionData(token: string) {
-    const decoded = this.jwtService.decode(token) as { sub: string };
-    return this.adminModel.findById(decoded.sub).exec();
-  }
-
   async login(admin: Admin) {
     const payload = { username: admin.username, sub: admin._id };
     return {

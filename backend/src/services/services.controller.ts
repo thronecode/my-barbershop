@@ -7,7 +7,6 @@ import {
   Body,
   Param,
   HttpStatus,
-  BadRequestException,
   UseGuards,
 } from '@nestjs/common';
 import { ServicesService } from './services.service';
@@ -55,9 +54,6 @@ export class ServicesController {
     type: Service,
   })
   async create(@Body() createServiceDto: CreateServiceDto): Promise<Service> {
-    if (await this.servicesService.findByName(createServiceDto.name)) {
-      throw new BadRequestException('Service already exists');
-    }
     return this.servicesService.create(createServiceDto);
   }
 
@@ -73,12 +69,6 @@ export class ServicesController {
     @Param('id') id: string,
     @Body() updateServiceDto: UpdateServiceDto,
   ): Promise<Service> {
-    const service = await this.servicesService.findByName(
-      updateServiceDto.name,
-    );
-    if (service && service.id !== id) {
-      throw new BadRequestException('Service already exists');
-    }
     return this.servicesService.update(id, updateServiceDto);
   }
 

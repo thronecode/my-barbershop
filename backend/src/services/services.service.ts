@@ -40,6 +40,10 @@ export class ServicesService {
   }
 
   async create(createServiceDto: CreateServiceDto): Promise<Service> {
+    if (await this.findByName(createServiceDto.name)) {
+      throw new BadRequestException('Service already exists');
+    }
+
     const createdService = new this.serviceModel(createServiceDto);
     return createdService.save();
   }
@@ -49,6 +53,11 @@ export class ServicesService {
     updateServiceDto: UpdateServiceDto,
   ): Promise<Service> {
     this.validateObjectId(id);
+
+    const service = await this.findByName(updateServiceDto.name);
+    if (service && service.id !== id) {
+      throw new BadRequestException('Service already exists');
+    }
 
     const existingService = await this.serviceModel.findById(id).exec();
     if (!existingService) {

@@ -9,12 +9,28 @@ import * as bcrypt from 'bcrypt';
 import { Admin } from './schemas/admin.schema';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AdminService {
-  constructor(@InjectModel(Admin.name) private adminModel: Model<Admin>) {}
+  constructor(
+    @InjectModel(Admin.name) private adminModel: Model<Admin>,
+    private jwtService: JwtService,
+  ) {}
+
+  private validateSecret(secret: string): void {
+    if (secret !== process.env.ADMIN_SECRET) {
+      throw new BadRequestException('Invalid secret');
+    }
+  }
 
   async create(createAdminDto: CreateAdminDto): Promise<Admin> {
+    this.validateSecret(createAdminDto.secret);
+
+    if (await this.findByUsername(createAdminDto.username)) {
+      throw new BadRequestException('Username already exists');
+    }
+
     const hashedPassword = await bcrypt.hash(createAdminDto.password, 10);
     const createdAdmin = new this.adminModel({
       ...createAdminDto,
@@ -56,7 +72,17 @@ export class AdminService {
     return admin;
   }
 
-  async remove(id: string): Promise<Admin> {
+  async getSessionData(token: string) {
+    const decoded = this.jwtService.decode(token) as { sub: string };
+    return this.adminModel.findById(decoded.sub).exec();
+  }
+
+  async remove(id: string, token: string): Promise<Admin> {
+    const adminSession = await this.getSessionData(token);
+    if (adminSession._id === id) {
+      throw new BadRequestException('Cannot delete own account');
+    }
+
     const admin = await this.adminModel.findByIdAndDelete(id).exec();
     if (!admin) {
       throw new NotFoundException(`Admin with Id ${id} not found`);

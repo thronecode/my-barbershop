@@ -8,7 +8,6 @@ import {
   Param,
   UseGuards,
   HttpStatus,
-  BadRequestException,
 } from '@nestjs/common';
 import { BarbersService } from './barbers.service';
 import { CreateBarberDto } from './dto/create-barber.dto';
@@ -37,9 +36,6 @@ export class BarbersController {
     type: Barber,
   })
   async create(@Body() createBarberDto: CreateBarberDto) {
-    if (await this.barbersService.findByName(createBarberDto.name)) {
-      throw new BadRequestException('Barber already exists');
-    }
     return this.barbersService.create(createBarberDto);
   }
 
@@ -85,10 +81,6 @@ export class BarbersController {
     @Param('id') id: string,
     @Body() updateBarberDto: UpdateBarberDto,
   ) {
-    const barber = await this.barbersService.findByName(updateBarberDto.name);
-    if (barber && barber.id !== id) {
-      throw new BadRequestException('Name already exists in another barber');
-    }
     return this.barbersService.update(id, updateBarberDto);
   }
 

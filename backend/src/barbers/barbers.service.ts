@@ -14,6 +14,10 @@ export class BarbersService {
   constructor(@InjectModel(Barber.name) private barberModel: Model<Barber>) {}
 
   async create(createBarberDto: CreateBarberDto): Promise<Barber> {
+    if (await this.findByName(createBarberDto.name)) {
+      throw new BadRequestException('Barber already exists');
+    }
+
     const newBarber = new this.barberModel(createBarberDto);
     return newBarber.save();
   }
@@ -44,6 +48,11 @@ export class BarbersService {
 
   async update(id: string, updateBarberDto: UpdateBarberDto): Promise<Barber> {
     this.validateObjectId(id);
+
+    const barber = await this.findByName(updateBarberDto.name);
+    if (barber && barber.id !== id) {
+      throw new BadRequestException('Name already exists in another barber');
+    }
 
     const existingBarber = await this.barberModel.findById(id).exec();
     if (!existingBarber) {
