@@ -8,13 +8,15 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  const config = new DocumentBuilder()
-    .setTitle('My Barbershop API')
-    .setDescription('API for a My BarberShop application')
-    .setVersion('0.0.1')
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api/docs', app, document);
+  if (process.env.NODE_ENV === 'development') {
+    const config = new DocumentBuilder()
+      .setTitle('My Barbershop API')
+      .setDescription('API for a My BarberShop application')
+      .setVersion('0.0.1')
+      .build();
+    const document = SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api/docs', app, document);
+  }
 
   await app.listen(3000);
 }
