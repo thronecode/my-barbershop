@@ -72,8 +72,12 @@ erDiagram
     SERVICE {
         int id
         string name
+        string description
         int duration
-        string type
+        []string kinds
+        boolean is_combo
+        float price
+        float commission_rate
     }
     
     APPOINTMENT {
@@ -83,8 +87,6 @@ erDiagram
         string client_name
         datetime start_time
         datetime end_time
-        boolean is_started
-        boolean is_completed
     }
     
     SCHEDULE {
@@ -163,14 +165,18 @@ erDiagram
     - Descrição: Listar todos os serviços.
     - Resposta: Lista de serviços.
 
+- `GET /api/services/:id`
+    - Descrição: Ver detalhes de um serviço.
+    - Resposta: Detalhes do serviço.
+
 - `POST /api/services`
     - Descrição: Criar um novo serviço.
-    - Parâmetros: `name`, `duration`, `type`
+    - Parâmetros: `name`, `description`, `duration`, `kinds`, `is_combo`, `price`
     - Resposta: Detalhes do serviço criado.
 
 - `PUT /api/services/:id`
     - Descrição: Atualizar os dados de um serviço.
-    - Parâmetros: `name`, `duration`, `type`
+    - Parâmetros: `name`, `description`, `duration`, `kinds`, `is_combo`, `price`
     - Resposta: Detalhes do serviço atualizado.
 
 - `DELETE /api/services/:id`

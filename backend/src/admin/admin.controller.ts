@@ -16,8 +16,8 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { Admin } from './schemas/admin.schema';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateAdminDto } from './dto/update-admin.dto';
-// import { AuthService } from '../auth/auth.service';
-// import { GetJwtToken } from '../decorators/get-jwt-token.decorator';
+import { AuthService } from '../auth/auth.service';
+import { GetJwtToken } from '../decorators/get-jwt-token.decorator';
 import {
   ApiOperation,
   ApiProperty,
@@ -29,7 +29,7 @@ import {
 export class AdminController {
   constructor(
     private readonly adminService: AdminService,
-    // private readonly authService: AuthService,
+    private readonly authService: AuthService,
   ) {}
 
   @Post()
@@ -95,19 +95,19 @@ export class AdminController {
     description: 'Return the deleted admin',
     type: Admin,
   })
-  // @ApiResponse({
-  //   status: HttpStatus.BAD_REQUEST,
-  //   description: 'Cannot delete own account',
-  // })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Cannot delete own account',
+  })
   @UseGuards(JwtAuthGuard)
   async remove(
     @Param('id') id: string,
-    // @GetJwtToken() token: string,
+    @GetJwtToken() token: string,
   ): Promise<Admin> {
-    // const adminSession = await this.authService.getSessionData(token);
-    // if (adminSession._id === id) {
-    //   throw new BadRequestException('Cannot delete own account');
-    // }
+    const adminSession = await this.authService.getSessionData(token);
+    if (adminSession._id === id) {
+      throw new BadRequestException('Cannot delete own account');
+    }
     return this.adminService.remove(id);
   }
 
