@@ -5,6 +5,7 @@ import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Admin } from '../admin/schemas/admin.schema';
 import * as process from 'node:process';
+import { LoginDto } from './dto/login.dto';
 
 @Injectable()
 export class AuthService {
@@ -13,15 +14,19 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async validateAdmin(
-    username: string,
-    password: string,
-  ): Promise<Admin | null> {
-    const admin = await this.adminModel.findOne({ username });
-    if (admin && (await bcrypt.compare(password, admin.password))) {
+  async validateAdmin(loginDto: LoginDto): Promise<Admin | null> {
+    const admin = await this.adminModel
+      .findOne({ username: loginDto.username })
+      .exec();
+    if (admin && (await bcrypt.compare(loginDto.password, admin.password))) {
       return admin;
     }
     return null;
+  }
+
+  async getSessionData(token: string) {
+    const decoded = this.jwtService.decode(token) as { sub: string };
+    return this.adminModel.findById(decoded.sub).exec();
   }
 
   async login(admin: Admin) {
@@ -29,7 +34,7 @@ export class AuthService {
     return {
       access_token: this.jwtService.sign(payload, {
         secret: process.env.JWT_SECRET,
-        expiresIn: '1d',
+        expiresIn: '7d',
       }),
     };
   }

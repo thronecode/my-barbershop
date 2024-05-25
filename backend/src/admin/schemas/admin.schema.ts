@@ -10,4 +10,11 @@ export class Admin extends Document {
   password: string;
 }
 
+@Schema()
+export class AdminResponse extends Document {
+  @Prop({ required: true })
+  username: string;
+}
+
+export const AdminResponseSchema = SchemaFactory.createForClass(AdminResponse);
 export const AdminSchema = SchemaFactory.createForClass(Admin);

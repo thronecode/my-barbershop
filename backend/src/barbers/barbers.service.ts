@@ -18,6 +18,10 @@ export class BarbersService {
     return this.barberModel.find().exec();
   }
 
+  async findByName(name: string): Promise<Barber> {
+    return this.barberModel.findOne({ name }).exec();
+  }
+
   async findOne(id: string): Promise<Barber> {
     return this.barberModel.findById(id).exec();
   }

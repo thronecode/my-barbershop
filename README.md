@@ -15,6 +15,7 @@
 [//]: # (ficar colocando se o barbeiro está ou não trabalhando&#41;)
 
 [//]: # ()
+
 [//]: # (O sistema também terá uma tela para clientes &#40;sem login&#41; onde o cliente pode verificar a agenda dos barbeiros e)
 
 [//]: # (visualizar se tem alguma fila de atendimentos pra aquele barbeiro no momento e quanto tempo demora pra ficar livre.)
@@ -27,7 +28,7 @@
 
 1. **Área de Administração (ADM):**
     - **Login de administrador:**
-        - Criação e lisagem de administradores.
+        - Criação e lisagem, atualização e remoção de administradores.
         - Autenticação e autorização de administradores.
     - **Cadastro de barbeiros:**
         - Nome
@@ -114,7 +115,20 @@ erDiagram
     - Descrição: Listar administradores.
     - Resposta: Lista administradores.
 
-- `POST /api/admin/login`
+- `GET /api/admin/:id`
+    - Descrição: Ver detalhes de um administrador.
+    - Resposta: Detalhes do administrador.
+
+- `PUT /api/admin/:id`]
+    - Descrição: Atualizar os dados de um administrador.
+    - Parâmetros: `password`
+    - Resposta: Detalhes do administrador atualizado.
+
+- `DELETE /api/admin/:id`
+    - Descrição: Deletar um administrador.
+    - Resposta: Status de sucesso.
+
+- `POST /api/auth/login`
     - Descrição: Autenticar o administrador.
     - Parâmetros: `username`, `password`
     - Resposta: Token de autenticação.
@@ -124,6 +138,10 @@ erDiagram
 - `GET /api/barbers`
     - Descrição: Listar todos os barbeiros.
     - Resposta: Lista de barbeiros.
+
+- `GET /api/barbers/:id`
+    - Descrição: Ver detalhes de um barbeiro.
+    - Resposta: Detalhes do barbeiro.
 
 - `POST /api/barbers`
     - Descrição: Criar um novo barbeiro.
