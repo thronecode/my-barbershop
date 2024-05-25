@@ -4,7 +4,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 @Schema()
 export class Barber extends Document {
-  @Prop()
   @ApiProperty({ description: 'Id of the barber' })
   _id: string;
 
