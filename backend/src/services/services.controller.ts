@@ -30,7 +30,7 @@ export class ServicesController {
     type: [Service],
   })
   async findAll(): Promise<Service[]> {
-    return this.servicesService.findAll();
+    return this.servicesService.findAll(false);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -42,7 +42,7 @@ export class ServicesController {
     type: Service,
   })
   async findOne(@Param('id') id: string): Promise<Service> {
-    return this.servicesService.findOne(id);
+    return this.servicesService.findOne(id, false);
   }
 
   @UseGuards(JwtAuthGuard)
