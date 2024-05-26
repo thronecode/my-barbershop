@@ -74,7 +74,11 @@ export class AdminService {
 
   async getSessionData(token: string) {
     const decoded = this.jwtService.decode(token) as { sub: string };
-    return this.adminModel.findById(decoded.sub).exec();
+    const adminSession = await this.findOne(decoded.sub);
+    if (!adminSession) {
+      throw new NotFoundException('Admin session not found');
+    }
+    return adminSession;
   }
 
   async remove(id: string, token: string): Promise<Admin> {

@@ -14,7 +14,7 @@ export class BarbersService {
   constructor(@InjectModel(Barber.name) private barberModel: Model<Barber>) {}
 
   async create(createBarberDto: CreateBarberDto): Promise<Barber> {
-    if (await this.findByName(createBarberDto.name)) {
+    if (await this.findByName(createBarberDto.name, false)) {
       throw new BadRequestException('Barber already exists');
     }
 
@@ -22,12 +22,12 @@ export class BarbersService {
     return newBarber.save();
   }
 
-  async findAll(): Promise<Barber[]> {
-    return this.barberModel.find().exec();
+  async findAll(deleted: boolean): Promise<Barber[]> {
+    return this.barberModel.find({ deleted }).exec();
   }
 
-  async findByName(name: string): Promise<Barber> {
-    const barber = await this.barberModel.findOne({ name }).exec();
+  async findByName(name: string, deleted: boolean): Promise<Barber> {
+    const barber = await this.barberModel.findOne({ name, deleted }).exec();
     if (!barber) {
       throw new NotFoundException(`Barber with name ${name} not found`);
     }
@@ -35,10 +35,10 @@ export class BarbersService {
     return barber;
   }
 
-  async findOne(id: string): Promise<Barber> {
+  async findOne(id: string, deleted: boolean): Promise<Barber> {
     this.validateObjectId(id);
 
-    const barber = await this.barberModel.findById(id).exec();
+    const barber = await this.barberModel.findOne({ id, deleted }).exec();
     if (!barber) {
       throw new NotFoundException(`Barber with Id ${id} not found`);
     }
@@ -49,12 +49,12 @@ export class BarbersService {
   async update(id: string, updateBarberDto: UpdateBarberDto): Promise<Barber> {
     this.validateObjectId(id);
 
-    const barber = await this.findByName(updateBarberDto.name);
+    const barber = await this.findByName(updateBarberDto.name, false);
     if (barber && barber.id !== id) {
       throw new BadRequestException('Name already exists in another barber');
     }
 
-    const existingBarber = await this.barberModel.findById(id).exec();
+    const existingBarber = await this.findOne(id, false);
     if (!existingBarber) {
       throw new NotFoundException(`Barber with Id ${id} not found`);
     }
@@ -67,12 +67,13 @@ export class BarbersService {
   async remove(id: string): Promise<Barber> {
     this.validateObjectId(id);
 
-    const existingBarber = await this.barberModel.findById(id).exec();
+    const existingBarber = await this.findOne(id, false);
     if (!existingBarber) {
       throw new NotFoundException(`Barber with Id ${id} not found`);
     }
 
-    return this.barberModel.findByIdAndDelete(id).exec();
+    existingBarber.deleted = true;
+    return existingBarber.save();
   }
 
   private validateObjectId(id: string): void {

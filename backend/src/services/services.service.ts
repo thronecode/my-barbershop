@@ -15,14 +15,14 @@ export class ServicesService {
     @InjectModel(Service.name) private readonly serviceModel: Model<Service>,
   ) {}
 
-  async findAll(): Promise<Service[]> {
-    return this.serviceModel.find().exec();
+  async findAll(deleted: boolean): Promise<Service[]> {
+    return this.serviceModel.find({ deleted }).exec();
   }
 
-  async findOne(id: string): Promise<Service> {
+  async findOne(id: string, deleted: boolean): Promise<Service> {
     this.validateObjectId(id);
 
-    const service = await this.serviceModel.findById(id).exec();
+    const service = await this.serviceModel.findOne({ id, deleted }).exec();
     if (!service) {
       throw new NotFoundException(`Service with ID ${id} not found`);
     }
@@ -30,8 +30,8 @@ export class ServicesService {
     return service;
   }
 
-  async findByName(name: string): Promise<Service> {
-    const service = this.serviceModel.findOne({ name }).exec();
+  async findByName(name: string, deleted: boolean): Promise<Service> {
+    const service = this.serviceModel.findOne({ name, deleted }).exec();
     if (!service) {
       throw new NotFoundException(`Service with name ${name} not found`);
     }
@@ -40,7 +40,7 @@ export class ServicesService {
   }
 
   async create(createServiceDto: CreateServiceDto): Promise<Service> {
-    if (await this.findByName(createServiceDto.name)) {
+    if (await this.findByName(createServiceDto.name, false)) {
       throw new BadRequestException('Service already exists');
     }
 
@@ -54,12 +54,12 @@ export class ServicesService {
   ): Promise<Service> {
     this.validateObjectId(id);
 
-    const service = await this.findByName(updateServiceDto.name);
+    const service = await this.findByName(updateServiceDto.name, false);
     if (service && service.id !== id) {
       throw new BadRequestException('Service already exists');
     }
 
-    const existingService = await this.serviceModel.findById(id).exec();
+    const existingService = await this.findOne(id, false);
     if (!existingService) {
       throw new NotFoundException(`Service with Id ${id} not found`);
     }
@@ -72,12 +72,13 @@ export class ServicesService {
   async remove(id: string): Promise<Service> {
     this.validateObjectId(id);
 
-    const existingService = await this.serviceModel.findById(id).exec();
+    const existingService = await this.findOne(id, false);
     if (!existingService) {
       throw new NotFoundException(`Service with Id ${id} not found`);
     }
 
-    return this.serviceModel.findByIdAndDelete(id).exec();
+    existingService.deleted = true;
+    return existingService.save();
   }
 
   private validateObjectId(id: string): void {

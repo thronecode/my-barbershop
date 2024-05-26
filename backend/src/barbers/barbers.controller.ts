@@ -49,7 +49,7 @@ export class BarbersController {
     type: [Barber],
   })
   async findAll() {
-    return this.barbersService.findAll();
+    return this.barbersService.findAll(false);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -63,7 +63,7 @@ export class BarbersController {
     type: Barber,
   })
   async findOne(@Param('id') id: string) {
-    return this.barbersService.findOne(id);
+    return this.barbersService.findOne(id, false);
   }
 
   @UseGuards(JwtAuthGuard)

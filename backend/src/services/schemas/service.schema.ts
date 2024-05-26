@@ -34,6 +34,9 @@ export class Service extends Document {
   @Prop()
   @ApiProperty({ description: 'Commission rate for the service' })
   commission_rate?: number;
+
+  @Prop({ default: false })
+  deleted: boolean;
 }
 
 export const ServiceSchema = SchemaFactory.createForClass(Service);

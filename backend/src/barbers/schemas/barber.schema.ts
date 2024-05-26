@@ -22,6 +22,9 @@ export class Barber extends Document {
   @Prop()
   @ApiProperty({ description: 'Commission rate of the barber' })
   commission_rate?: number;
+
+  @Prop({ default: false })
+  deleted: boolean;
 }
 
 export const BarberSchema = SchemaFactory.createForClass(Barber);
