@@ -52,21 +52,8 @@ export class ServicesService {
     id: string,
     updateServiceDto: UpdateServiceDto,
   ): Promise<Service> {
-    this.validateObjectId(id);
-
-    const service = await this.findByName(updateServiceDto.name, false);
-    if (service && service.id !== id) {
-      throw new BadRequestException('Service already exists');
-    }
-
-    const existingService = await this.findOne(id, false);
-    if (!existingService) {
-      throw new NotFoundException(`Service with Id ${id} not found`);
-    }
-
-    return this.serviceModel
-      .findByIdAndUpdate(id, updateServiceDto, { new: true })
-      .exec();
+    await this.remove(id);
+    return this.create(updateServiceDto as CreateServiceDto);
   }
 
   async remove(id: string): Promise<Service> {
