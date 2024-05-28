@@ -4,12 +4,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { isValidObjectId, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Admin } from './schemas/admin.schema';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { JwtService } from '@nestjs/jwt';
+import { validateObjectId } from '../utils/objectId.util';
 
 @Injectable()
 export class AdminService {
@@ -51,7 +52,7 @@ export class AdminService {
   }
 
   async findOne(id: string): Promise<Admin> {
-    this.validateObjectId(id);
+    validateObjectId(id);
 
     const admin = await this.adminModel.findById(id).exec();
     if (!admin) {
@@ -103,7 +104,7 @@ export class AdminService {
       delete updateAdminDto.password;
     }
 
-    this.validateObjectId(id);
+    validateObjectId(id);
 
     const admin = await this.adminModel
       .findByIdAndUpdate(id, updateAdminDto, { new: true })
@@ -114,11 +115,5 @@ export class AdminService {
 
     admin.password = undefined;
     return admin;
-  }
-
-  private validateObjectId(id: string): void {
-    if (!isValidObjectId(id)) {
-      throw new BadRequestException(`Invalid Id format: ${id}`);
-    }
   }
 }

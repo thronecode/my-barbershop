@@ -4,10 +4,11 @@ import {
   BadRequestException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, isValidObjectId } from 'mongoose';
+import { Model } from 'mongoose';
 import { Service } from './schemas/service.schema';
 import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
+import { validateObjectId } from '../utils/objectId.util';
 
 @Injectable()
 export class ServicesService {
@@ -20,7 +21,7 @@ export class ServicesService {
   }
 
   async findOne(id: string, deleted: boolean): Promise<Service> {
-    this.validateObjectId(id);
+    validateObjectId(id);
 
     const service = await this.serviceModel.findOne({ id, deleted }).exec();
     if (!service) {
@@ -57,7 +58,7 @@ export class ServicesService {
   }
 
   async remove(id: string): Promise<Service> {
-    this.validateObjectId(id);
+    validateObjectId(id);
 
     const existingService = await this.findOne(id, false);
     if (!existingService) {
@@ -66,11 +67,5 @@ export class ServicesService {
 
     existingService.deleted = true;
     return existingService.save();
-  }
-
-  private validateObjectId(id: string): void {
-    if (!isValidObjectId(id)) {
-      throw new BadRequestException(`Invalid Id format: ${id}`);
-    }
   }
 }

@@ -4,10 +4,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { isValidObjectId, Model } from 'mongoose';
+import { Model } from 'mongoose';
 import { Barber } from './schemas/barber.schema';
 import { CreateBarberDto } from './dto/create-barber.dto';
 import { UpdateBarberDto } from './dto/update-barber.dto';
+import { validateObjectId } from '../utils/objectId.util';
 
 @Injectable()
 export class BarbersService {
@@ -36,7 +37,7 @@ export class BarbersService {
   }
 
   async findOne(id: string, deleted: boolean): Promise<Barber> {
-    this.validateObjectId(id);
+    validateObjectId(id);
 
     const barber = await this.barberModel.findOne({ id, deleted }).exec();
     if (!barber) {
@@ -47,7 +48,7 @@ export class BarbersService {
   }
 
   async update(id: string, updateBarberDto: UpdateBarberDto): Promise<Barber> {
-    this.validateObjectId(id);
+    validateObjectId(id);
 
     const barber = await this.findByName(updateBarberDto.name, false);
     if (barber && barber.id !== id) {
@@ -65,7 +66,7 @@ export class BarbersService {
   }
 
   async remove(id: string): Promise<Barber> {
-    this.validateObjectId(id);
+    validateObjectId(id);
 
     const existingBarber = await this.findOne(id, false);
     if (!existingBarber) {
@@ -74,11 +75,5 @@ export class BarbersService {
 
     existingBarber.deleted = true;
     return existingBarber.save();
-  }
-
-  private validateObjectId(id: string): void {
-    if (!isValidObjectId(id)) {
-      throw new BadRequestException(`Invalid Id format: ${id}`);
-    }
   }
 }
