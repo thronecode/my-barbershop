@@ -4,8 +4,6 @@ import {
   Get,
   Body,
   UseGuards,
-  UnauthorizedException,
-  BadRequestException,
   Param,
   Delete,
   Put,
@@ -16,7 +14,6 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { Admin } from './schemas/admin.schema';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { UpdateAdminDto } from './dto/update-admin.dto';
-import { AuthService } from '../auth/auth.service';
 import { GetJwtToken } from '../decorators/get-jwt-token.decorator';
 import {
   ApiOperation,
@@ -27,10 +24,7 @@ import {
 
 @Controller('admin')
 export class AdminController {
-  constructor(
-    private readonly adminService: AdminService,
-    private readonly authService: AuthService,
-  ) {}
+  constructor(private readonly adminService: AdminService) {}
 
   @Post()
   @ApiOperation({ summary: 'Create a new admin' })
@@ -41,21 +35,7 @@ export class AdminController {
     description: 'Return the created admin',
     type: Admin,
   })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Invalid secret',
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Username already exists',
-  })
   async create(@Body() createAdminDto: CreateAdminDto): Promise<Admin> {
-    if (createAdminDto.secret !== process.env.ADMIN_SECRET) {
-      throw new UnauthorizedException('Invalid secret');
-    }
-    if (await this.adminService.findByUsername(createAdminDto.username)) {
-      throw new BadRequestException('Username already exists');
-    }
     return this.adminService.create(createAdminDto);
   }
 
@@ -95,20 +75,12 @@ export class AdminController {
     description: 'Return the deleted admin',
     type: Admin,
   })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Cannot delete own account',
-  })
   @UseGuards(JwtAuthGuard)
   async remove(
     @Param('id') id: string,
     @GetJwtToken() token: string,
   ): Promise<Admin> {
-    const adminSession = await this.authService.getSessionData(token);
-    if (adminSession._id === id) {
-      throw new BadRequestException('Cannot delete own account');
-    }
-    return this.adminService.remove(id);
+    return this.adminService.remove(id, token);
   }
 
   @Put(':id')

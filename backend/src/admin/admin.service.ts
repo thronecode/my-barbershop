@@ -1,76 +1,119 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { Admin } from './schemas/admin.schema';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
+import { JwtService } from '@nestjs/jwt';
+import { validateObjectId } from '../utils/objectId.util';
 
 @Injectable()
 export class AdminService {
-  constructor(@InjectModel(Admin.name) private adminModel: Model<Admin>) {}
+  constructor(
+    @InjectModel(Admin.name) private adminModel: Model<Admin>,
+    private jwtService: JwtService,
+  ) {}
+
+  private validateSecret(secret: string): void {
+    if (secret !== process.env.ADMIN_SECRET) {
+      throw new BadRequestException('Invalid secret');
+    }
+  }
 
   async create(createAdminDto: CreateAdminDto): Promise<Admin> {
+    this.validateSecret(createAdminDto.secret);
+
+    if (await this.findByUsername(createAdminDto.username)) {
+      throw new BadRequestException('Username already exists');
+    }
+
     const hashedPassword = await bcrypt.hash(createAdminDto.password, 10);
     const createdAdmin = new this.adminModel({
       ...createAdminDto,
       password: hashedPassword,
     });
-    const result = createdAdmin.save();
-    result.then((admin) => {
-      admin.password = undefined;
-    });
-    return result;
+    const admin = await createdAdmin.save();
+
+    admin.password = undefined;
+    return admin;
   }
 
   async findAll(): Promise<Admin[]> {
-    const result = this.adminModel.find().exec();
-    result.then((admins) => {
-      admins.forEach((admin) => {
-        admin.password = undefined;
-      });
+    const admins = await this.adminModel.find().exec();
+    return admins.map((admin) => {
+      admin.password = undefined;
+      return admin;
     });
-    return result;
   }
 
   async findOne(id: string): Promise<Admin> {
-    const result = this.adminModel.findById(id).exec();
-    result.then((admin) => {
-      admin.password = undefined;
-    });
-    return result;
+    validateObjectId(id);
+
+    const admin = await this.adminModel.findById(id).exec();
+    if (!admin) {
+      throw new NotFoundException(`Admin with Id ${id} not found`);
+    }
+
+    admin.password = undefined;
+    return admin;
   }
 
   async findByUsername(username: string): Promise<Admin> {
-    const result = this.adminModel.findOne({
-      username,
-    });
-    result.then((admin) => {
-      admin.password = undefined;
-    });
-    return result;
+    const admin = await this.adminModel.findOne({ username }).exec();
+    if (!admin) {
+      throw new NotFoundException(`Admin with username ${username} not found`);
+    }
+
+    admin.password = undefined;
+    return admin;
   }
 
-  async remove(id: string): Promise<Admin> {
-    const result = this.adminModel.findByIdAndDelete(id).exec();
-    result.then((admin) => {
-      admin.password = undefined;
-    });
-    return result;
+  async getSessionData(token: string) {
+    const decoded = this.jwtService.decode(token) as { sub: string };
+    const adminSession = await this.findOne(decoded.sub);
+    if (!adminSession) {
+      throw new NotFoundException('Admin session not found');
+    }
+    return adminSession;
+  }
+
+  async remove(id: string, token: string): Promise<Admin> {
+    const adminSession = await this.getSessionData(token);
+    if (adminSession._id === id) {
+      throw new BadRequestException('Cannot delete own account');
+    }
+
+    const admin = await this.adminModel.findByIdAndDelete(id).exec();
+    if (!admin) {
+      throw new NotFoundException(`Admin with Id ${id} not found`);
+    }
+
+    admin.password = undefined;
+    return admin;
   }
 
   async update(id: string, updateAdminDto: UpdateAdminDto): Promise<Admin> {
-    const hashedPassword = await bcrypt.hash(updateAdminDto.password, 10);
-    const result = this.adminModel
-      .findByIdAndUpdate(
-        id,
-        { ...updateAdminDto, password: hashedPassword },
-        { new: true },
-      )
+    if (updateAdminDto.password) {
+      updateAdminDto.password = await bcrypt.hash(updateAdminDto.password, 10);
+    } else {
+      delete updateAdminDto.password;
+    }
+
+    validateObjectId(id);
+
+    const admin = await this.adminModel
+      .findByIdAndUpdate(id, updateAdminDto, { new: true })
       .exec();
-    result.then((admin) => {
-      admin.password = undefined;
-    });
-    return result;
+    if (!admin) {
+      throw new NotFoundException(`Admin with Id ${id} not found`);
+    }
+
+    admin.password = undefined;
+    return admin;
   }
 }

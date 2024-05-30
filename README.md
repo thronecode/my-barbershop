@@ -121,7 +121,7 @@ erDiagram
     - Descrição: Ver detalhes de um administrador.
     - Resposta: Detalhes do administrador.
 
-- `PUT /api/admin/:id`]
+- `PUT /api/admin/:id`
     - Descrição: Atualizar os dados de um administrador.
     - Parâmetros: `password`
     - Resposta: Detalhes do administrador atualizado.
@@ -147,18 +147,18 @@ erDiagram
 
 - `POST /api/barbers`
     - Descrição: Criar um novo barbeiro.
-    - Parâmetros: `name`, `photo`
+    - Parâmetros: `name`, `photo`, `commission_rate`
     - Resposta: Detalhes do barbeiro criado.
 
 - `PUT /api/barbers/:id`
     - Descrição: Atualizar os dados de um barbeiro.
-    - Parâmetros: `name`, `photo`, `is_working`
+    - Parâmetros: `name`, `photo`, `is_working`, `commission_rate`
     - Resposta: Detalhes do barbeiro atualizado.
 
 - `DELETE /api/barbers/:id`
     - Descrição: Deletar um barbeiro.
     - Resposta: Status de sucesso.
-
+''
 #### Rotas para Serviços
 
 - `GET /api/services`
@@ -171,12 +171,12 @@ erDiagram
 
 - `POST /api/services`
     - Descrição: Criar um novo serviço.
-    - Parâmetros: `name`, `description`, `duration`, `kinds`, `is_combo`, `price`
+    - Parâmetros: `name`, `description`, `duration`, `kinds`, `is_combo`, `price`, `commission_rate`
     - Resposta: Detalhes do serviço criado.
 
 - `PUT /api/services/:id`
     - Descrição: Atualizar os dados de um serviço.
-    - Parâmetros: `name`, `description`, `duration`, `kinds`, `is_combo`, `price`
+    - Parâmetros: `name`, `description`, `duration`, `kinds`, `is_combo`, `price`, `commission_rate`
     - Resposta: Detalhes do serviço atualizado.
 
 - `DELETE /api/services/:id`

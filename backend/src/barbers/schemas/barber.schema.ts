@@ -13,11 +13,18 @@ export class Barber extends Document {
 
   @Prop()
   @ApiProperty({ description: 'Photo url of the barber' })
-  photo: string;
+  photo?: string;
 
   @Prop({ default: false })
   @ApiProperty({ description: 'Is the barber working today?' })
   is_working: boolean;
+
+  @Prop()
+  @ApiProperty({ description: 'Commission rate of the barber' })
+  commission_rate?: number;
+
+  @Prop({ default: false })
+  deleted: boolean;
 }
 
 export const BarberSchema = SchemaFactory.createForClass(Barber);

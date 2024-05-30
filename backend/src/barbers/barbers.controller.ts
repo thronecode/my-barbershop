@@ -8,7 +8,6 @@ import {
   Param,
   UseGuards,
   HttpStatus,
-  BadRequestException,
 } from '@nestjs/common';
 import { BarbersService } from './barbers.service';
 import { CreateBarberDto } from './dto/create-barber.dto';
@@ -36,14 +35,7 @@ export class BarbersController {
     description: 'Return the created barber',
     type: Barber,
   })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Barber already exists',
-  })
   async create(@Body() createBarberDto: CreateBarberDto) {
-    if (await this.barbersService.findByName(createBarberDto.name)) {
-      throw new BadRequestException('Barber already exists');
-    }
     return this.barbersService.create(createBarberDto);
   }
 
@@ -57,7 +49,7 @@ export class BarbersController {
     type: [Barber],
   })
   async findAll() {
-    return this.barbersService.findAll();
+    return this.barbersService.findAll(false);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -71,7 +63,7 @@ export class BarbersController {
     type: Barber,
   })
   async findOne(@Param('id') id: string) {
-    return this.barbersService.findOne(id);
+    return this.barbersService.findOne(id, false);
   }
 
   @UseGuards(JwtAuthGuard)
@@ -85,18 +77,10 @@ export class BarbersController {
     description: 'Return the updated barber',
     type: Barber,
   })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Name already exists in another barber',
-  })
   async update(
     @Param('id') id: string,
     @Body() updateBarberDto: UpdateBarberDto,
   ) {
-    const barber = await this.barbersService.findByName(updateBarberDto.name);
-    if (barber && barber.id !== id) {
-      throw new BadRequestException('Name already exists in another barber');
-    }
     return this.barbersService.update(id, updateBarberDto);
   }
 

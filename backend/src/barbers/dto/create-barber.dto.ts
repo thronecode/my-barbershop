@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsUrl } from 'class-validator';
+import { IsString, IsNotEmpty, IsUrl, IsNumber } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateBarberDto {
@@ -10,5 +10,10 @@ export class CreateBarberDto {
   @ApiProperty({ description: 'Photo url of the barber' })
   @IsUrl()
   @IsNotEmpty()
-  readonly photo: string;
+  readonly photo?: string;
+
+  @ApiProperty({ description: 'Commission rate of the barber' })
+  @IsNumber()
+  @IsNotEmpty()
+  commission_rate?: number;
 }
