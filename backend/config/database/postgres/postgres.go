@@ -2,9 +2,12 @@ package postgres
 
 import (
 	"backend/config"
+	"backend/sorry"
+
 	"database/sql"
 
-	_ "github.com/lib/pq"
+	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5/stdlib"
 )
 
 type Postgres struct {
@@ -12,14 +15,18 @@ type Postgres struct {
 }
 
 func (p *Postgres) Open(cfg *config.DatabaseConfig) error {
-	dsn := "postgres://" + cfg.User + ":" + cfg.Password + "@" + cfg.Host + "/" + cfg.DBName + "?sslmode=disable"
-	db, err := sql.Open("postgres", dsn)
+	pgxPoolConfig, err := pgxpool.ParseConfig("postgres://" + cfg.User + ":" + cfg.Password + "@" + cfg.Host + ":" + cfg.Port + "/" + cfg.Port + "?sslmode=disable")
 	if err != nil {
-		return err
+		return sorry.Err(err)
+	}
+
+	db := stdlib.OpenDB(*pgxPoolConfig.ConnConfig)
+	if db == nil {
+		return sorry.NewErr("failed to open database")
 	}
 
 	if err = db.Ping(); err != nil {
-		return err
+		return sorry.Err(err)
 	}
 
 	p.DB = db
@@ -28,10 +35,15 @@ func (p *Postgres) Open(cfg *config.DatabaseConfig) error {
 
 func (p *Postgres) Close() {
 	if p.DB != nil {
-		_ = p.DB.Close()
+		p.DB.Close()
 	}
 }
 
-func (p *Postgres) NewTx() (interface{}, error) {
-	return p.DB.Begin()
+func (p *Postgres) NewTx() (any, error) {
+	tx, err := p.DB.Begin()
+	if err != nil {
+		return nil, sorry.Err(err)
+	}
+
+	return tx, nil
 }

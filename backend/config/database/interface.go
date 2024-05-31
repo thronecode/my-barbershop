@@ -6,7 +6,7 @@ import "backend/config"
 type Database interface {
 	Open(*config.DatabaseConfig) error
 	Close()
-	NewTx() (interface{}, error)
+	NewTx() (any, error)
 }
 
 // Transaction interface for multiple databases

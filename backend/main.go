@@ -3,12 +3,23 @@ package main
 import (
 	"backend/config"
 	"backend/config/database"
+	_ "backend/docs"
 	"backend/interface/admin"
-
-	"github.com/gin-gonic/gin"
+	"backend/interface/auth"
 
 	"log"
+
+	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
+
+// @title My Barbershop API
+// @version 1.0
+// @description API for a My BarberShop application
+
+// @host localhost:4002
+// @BasePath /api
 
 func main() {
 	if err := config.LoadConfig("config.json"); err != nil {
@@ -22,8 +33,10 @@ func main() {
 
 	router := gin.Default()
 	admin.RegisterRoutes(router)
+	auth.RegisterRoutes(router)
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	if err := router.Run(":8080"); err != nil {
+	if err := router.Run(":4002"); err != nil {
 		log.Fatalf("Error starting server: %v", err)
 	}
 }

@@ -1,0 +1,25 @@
+{
+  "auth": {
+    "secret": "your_secret_here"
+  },
+  "databases": [
+    {
+      "driver": "postgres",
+      "host": "localhost",
+      "port": "5432",
+      "user": "user1",
+      "password": "password1",
+      "dbname": "db1",
+      "readonly": false
+    },
+    {
+      "driver": "postgres",
+      "host": "localhost",
+      "port": "5432",
+      "user": "user1",
+      "password": "password1",
+      "dbname": "db1",
+      "readonly": true
+    }
+  ]
+}

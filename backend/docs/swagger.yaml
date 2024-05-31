@@ -1,0 +1,188 @@
+basePath: /api
+definitions:
+  admin.AdminInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  admin.AdminOutput:
+    properties:
+      id:
+        type: integer
+      username:
+        type: string
+    type: object
+  admin.AdminPagOutput:
+    properties:
+      count:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/admin.AdminOutput'
+        type: array
+      next:
+        type: boolean
+    type: object
+  admin.AdminUpdateInput:
+    properties:
+      password:
+        type: string
+    required:
+    - password
+    type: object
+  auth.LoginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  auth.LoginOutput:
+    properties:
+      token:
+        type: string
+    type: object
+host: localhost:4002
+info:
+  contact: {}
+  description: API for a My BarberShop application
+  title: My Barbershop API
+  version: "1.0"
+paths:
+  /admin:
+    get:
+      consumes:
+      - application/json
+      description: List all admins
+      parameters:
+      - description: full or partial username
+        in: query
+        name: username
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admin.AdminPagOutput'
+      summary: List admins
+      tags:
+      - admin
+    post:
+      consumes:
+      - application/json
+      description: Add a new admin
+      parameters:
+      - description: Admin input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/admin.AdminInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/admin.AdminOutput'
+      summary: Add admin
+      tags:
+      - admin
+  /admin/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete admin by ID
+      parameters:
+      - description: Admin ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete admin
+      tags:
+      - admin
+    get:
+      consumes:
+      - application/json
+      description: Get admin by ID
+      parameters:
+      - description: Admin ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admin.AdminOutput'
+      summary: Get admin
+      tags:
+      - admin
+    put:
+      consumes:
+      - application/json
+      description: Update admin by ID
+      parameters:
+      - description: Admin ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Admin update input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/admin.AdminUpdateInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/admin.AdminOutput'
+      summary: Update admin
+      tags:
+      - admin
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login as an admin
+      parameters:
+      - description: login input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/auth.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/auth.LoginOutput'
+      summary: Login
+      tags:
+      - auth
+swagger: "2.0"

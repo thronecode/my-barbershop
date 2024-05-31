@@ -7,10 +7,10 @@ import (
 func RegisterRoutes(router *gin.Engine) {
 	admin := router.Group("/api/admin")
 	{
-		admin.POST("/", CreateAdmin)
-		admin.GET("/", ListAdmins)
-		admin.GET("/:id", GetAdmin)
-		admin.PUT("/:id", UpdateAdmin)
-		admin.DELETE("/:id", DeleteAdmin)
+		admin.POST("/", add)
+		admin.GET("/", list)
+		admin.GET("/:id", get)
+		admin.PUT("/:id", update)
+		admin.DELETE("/:id", remove)
 	}
 }
