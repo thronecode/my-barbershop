@@ -1,6 +1,6 @@
 # My BarberShop Backend
 
-Este é o backend da aplicação My BarberShop, desenvolvido com NestJS e MongoDB.
+Este é o backend da aplicação My BarberShop, desenvolvido com Go e PostgreSQL.
 
 ## Instalação
 
@@ -14,15 +14,38 @@ Este é o backend da aplicação My BarberShop, desenvolvido com NestJS e MongoD
    ```
 3. Instale as dependências:
    ```bash
-   npm install
+   go mod download
    ```
 
 ## Configuração
 
-1. Crie um arquivo `.env` na raiz do projeto com as seguintes variáveis:
-   ```env
-   MONGO_URI=mongodb://localhost:27017/barber-shop
-   JWT_SECRET=your_jwt_secret_key
+1. Ajuste um arquivo `config.json` na raz do projeto com as configurações do seu banco postgres e sua key JWT:
+   ```json
+    {
+      "auth": {
+        "secret": "your_secret_here"
+      },
+      "databases": [
+        {
+          "driver": "postgres",
+          "host": "localhost",
+          "port": "5432",
+          "user": "user1",
+          "password": "password1",
+          "dbname": "db1",
+          "readonly": false
+        },
+        {
+          "driver": "postgres",
+          "host": "localhost",
+          "port": "5432",
+          "user": "user1",
+          "password": "password1",
+          "dbname": "db1",
+          "readonly": true
+        }
+      ]
+    }
    ```
 
 ## Executando o Projeto
@@ -30,7 +53,7 @@ Este é o backend da aplicação My BarberShop, desenvolvido com NestJS e MongoD
 Para iniciar o servidor, execute:
 
 ```bash
-npm run start
+go run main.go
 ```
 
 ## Testes
@@ -38,10 +61,5 @@ npm run start
 Para executar os testes, use o comando:
 
 ```bash
-npm run test
+go test ./...
 ```
-
-## Contribuição
-
-Contribuições são bem-vindas! Por favor, envie um pull request ou abra uma issue para discutir o que você gostaria de
-mudar.
