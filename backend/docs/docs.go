@@ -639,7 +639,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:4002",
 	BasePath:         "/api",
 	Schemes:          []string{},
-	Title:            "My Barbershop API",
+	Title:            "My BarberShop API",
 	Description:      "API for a My BarberShop application",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

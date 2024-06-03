@@ -15,7 +15,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title My Barbershop API
+// @title My BarberShop API
 // @version 1.0
 // @description API for a My BarberShop application
 
@@ -28,7 +28,7 @@ func main() {
 	}
 
 	if err := database.OpenConnections(); err != nil {
-		log.Fatalf("Error connecting to database: %v", err)
+		//log.Fatalf("Error connecting to database: %v", err)
 	}
 	defer database.CloseConnections()
 

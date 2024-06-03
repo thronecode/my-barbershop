@@ -117,7 +117,7 @@ host: localhost:4002
 info:
   contact: {}
   description: API for a My BarberShop application
-  title: My Barbershop API
+  title: My BarberShop API
   version: "1.0"
 paths:
   /admin:

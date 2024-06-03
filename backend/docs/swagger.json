@@ -2,7 +2,7 @@
     "swagger": "2.0",
     "info": {
         "description": "API for a My BarberShop application",
-        "title": "My Barbershop API",
+        "title": "My BarberShop API",
         "contact": {},
         "version": "1.0"
     },
