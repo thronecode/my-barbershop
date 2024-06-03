@@ -2,9 +2,9 @@ package admin
 
 // Admin is the struct that represents the admin user
 type Admin struct {
-	ID       *int    `converter:"id"`
-	Username *string `converter:"username"`
-	Password *string `converter:"password"`
+	ID       *int    `converter:"id" sql:"adm.id"`
+	Username *string `converter:"username" sql:"adm.username"`
+	Password *string `converter:"password" sql:"adm.password"`
 }
 
 // FilterListAdmins is the struct that represents the filter for the list of admins
@@ -16,5 +16,5 @@ type FilterListAdmins struct {
 type PagAdmin struct {
 	Data  []Admin
 	Next  *bool
-	Count *int64
+	Count *int
 }

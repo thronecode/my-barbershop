@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"backend/sorry"
 	"backend/utils"
 
 	"github.com/gin-gonic/gin"
@@ -16,13 +17,23 @@ func AuthMiddleware() gin.HandlerFunc {
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
 			c.Abort()
+			sorry.Handling(c, sorry.Err(&sorry.Error{
+				Code:       sorry.ValidationErroCode,
+				Err:        sorry.NewErr("Authorization header required"),
+				Msg:        "Authorization header required",
+				StatusCode: http.StatusUnauthorized,
+			}))
 			return
 		}
 
 		token := strings.TrimPrefix(authHeader, "Bearer ")
 		if !utils.IsValidToken(token) {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
-			c.Abort()
+			sorry.Handling(c, sorry.Err(&sorry.Error{
+				Code:       sorry.ValidationErroCode,
+				Err:        sorry.NewErr("Invalid token"),
+				Msg:        "Invalid token",
+				StatusCode: http.StatusUnauthorized,
+			}))
 			return
 		}
 
