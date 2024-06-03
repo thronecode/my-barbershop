@@ -7,9 +7,7 @@ import (
 	"backend/utils"
 	"database/sql"
 
-	"strconv"
-
-	"github.com/pkg/errors"
+	"errors"
 )
 
 type PGAdmin struct {
@@ -18,19 +16,11 @@ type PGAdmin struct {
 
 // List returns a paginated list of admins
 func (pg *PGAdmin) List(params *utils.RequestParams) (*admin.PagAdmin, error) {
-	var (
-		columns = []string{"adm.id as id", "adm.username as username"}
-		filters admin.FilterListAdmins
-	)
-
-	if params.Total {
-		columns = []string{"count(*)"}
-	}
-
 	query := pg.DB.Builder.
-		Select(columns...).
+		Select(utils.GetColumns(admin.Admin{}, &params.Total)...).
 		From("t_admin adm")
 
+	var filters admin.FilterListAdmins
 	err := params.ConvertFilters(&filters)
 	if err != nil {
 		return nil, sorry.Err(err)
@@ -40,47 +30,16 @@ func (pg *PGAdmin) List(params *utils.RequestParams) (*admin.PagAdmin, error) {
 		query = query.Where("lower(unaccent(username)) like lower(unaccent(?))", filters.Username)
 	}
 
-	if params.Total {
-		var total int64
-		err = query.QueryRow().Scan(&total)
-		if err != nil {
-			return nil, sorry.Err(err)
-		}
-
-		return &admin.PagAdmin{Count: &total}, nil
-	}
-
-	query = query.
-		Limit(params.Limit + 1).
-		Offset(params.Offset)
-
-	if params.OrderKey != "" {
-		query = query.OrderBy(params.OrderKey + " " + strconv.FormatBool(params.Desc))
-	}
-
-	rows, err := query.Query()
+	admins, next, count, err := utils.MakePaginatedList(admin.Admin{}, &query, params)
 	if err != nil {
 		return nil, sorry.Err(err)
 	}
-	defer rows.Close()
 
-	var admins []admin.Admin
-	for rows.Next() {
-		var adm admin.Admin
-		err = rows.Scan(&adm.ID, &adm.Username)
-		if err != nil {
-			return nil, sorry.Err(err)
-		}
-		admins = append(admins, adm)
-	}
-
-	var next bool
-	if len(admins) > int(params.Limit) {
-		next = true
-		admins = admins[:len(admins)-1]
-	}
-
-	return &admin.PagAdmin{Data: admins, Next: &next}, nil
+	return &admin.PagAdmin{
+		Data:  admins.([]admin.Admin),
+		Next:  next,
+		Count: count,
+	}, nil
 }
 
 // Get returns an admin by its id
