@@ -1,6 +1,6 @@
 basePath: /api
 definitions:
-  admin.AdminInput:
+  admin.Input:
     properties:
       password:
         type: string
@@ -10,25 +10,25 @@ definitions:
     - password
     - username
     type: object
-  admin.AdminOutput:
+  admin.Output:
     properties:
       id:
         type: integer
       username:
         type: string
     type: object
-  admin.AdminPagOutput:
+  admin.PagOutput:
     properties:
       count:
         type: integer
       data:
         items:
-          $ref: '#/definitions/admin.AdminOutput'
+          $ref: '#/definitions/admin.Output'
         type: array
       next:
         type: boolean
     type: object
-  admin.AdminUpdateInput:
+  admin.UpdateInput:
     properties:
       password:
         type: string
@@ -49,6 +49,69 @@ definitions:
     properties:
       token:
         type: string
+    type: object
+  barber.CheckinInput:
+    properties:
+      barberID:
+        type: integer
+      date_time:
+        type: string
+    required:
+    - date_time
+    type: object
+  barber.CheckinOutput:
+    properties:
+      barber_id:
+        type: integer
+      date_time:
+        type: string
+      id:
+        type: integer
+    type: object
+  barber.Input:
+    properties:
+      commission_rate:
+        type: number
+      name:
+        type: string
+      photo_url:
+        type: string
+    required:
+    - name
+    - photo_url
+    type: object
+  barber.Output:
+    properties:
+      commission_rate:
+        type: number
+      id:
+        type: integer
+      name:
+        type: string
+      photo_url:
+        type: string
+    type: object
+  barber.PagCheckinOutput:
+    properties:
+      count:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/barber.CheckinOutput'
+        type: array
+      next:
+        type: boolean
+    type: object
+  barber.PagOutput:
+    properties:
+      count:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/barber.Output'
+        type: array
+      next:
+        type: boolean
     type: object
 host: localhost:4002
 info:
@@ -73,7 +136,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin.AdminPagOutput'
+            $ref: '#/definitions/admin.PagOutput'
       summary: List admins
       tags:
       - admin
@@ -87,14 +150,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/admin.AdminInput'
+          $ref: '#/definitions/admin.Input'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/admin.AdminOutput'
+            $ref: '#/definitions/admin.Output'
       summary: Add admin
       tags:
       - admin
@@ -133,7 +196,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin.AdminOutput'
+            $ref: '#/definitions/admin.Output'
       summary: Get admin
       tags:
       - admin
@@ -152,14 +215,14 @@ paths:
         name: input
         required: true
         schema:
-          $ref: '#/definitions/admin.AdminUpdateInput'
+          $ref: '#/definitions/admin.UpdateInput'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/admin.AdminOutput'
+            $ref: '#/definitions/admin.Output'
       summary: Update admin
       tags:
       - admin
@@ -185,4 +248,165 @@ paths:
       summary: Login
       tags:
       - auth
+  /barber:
+    get:
+      consumes:
+      - application/json
+      description: List all barbers
+      parameters:
+      - description: full or partial barber name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/barber.PagOutput'
+      summary: List barbers
+      tags:
+      - barber
+    post:
+      consumes:
+      - application/json
+      description: Add a new barber
+      parameters:
+      - description: Barber input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/barber.Input'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/barber.Output'
+      summary: Add barber
+      tags:
+      - barber
+  /barber/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete barber by ID
+      parameters:
+      - description: Barber ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete barber
+      tags:
+      - barber
+    get:
+      consumes:
+      - application/json
+      description: Get barber by ID
+      parameters:
+      - description: Barber ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/barber.Output'
+      summary: Get barber
+      tags:
+      - barber
+    put:
+      consumes:
+      - application/json
+      description: Update barber by ID
+      parameters:
+      - description: Barber ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Barber update input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/barber.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/barber.Output'
+      summary: Update barber
+      tags:
+      - barber
+  /barber/{id}/checkin:
+    get:
+      consumes:
+      - application/json
+      description: Get check-ins for a barber
+      parameters:
+      - description: Barber ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Initial date
+        in: query
+        name: initial_date
+        type: string
+      - description: Final date
+        in: query
+        name: final_date
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/barber.PagCheckinOutput'
+      summary: Get check-ins
+      tags:
+      - barber
+    post:
+      consumes:
+      - application/json
+      description: Add a check-in for a barber
+      parameters:
+      - description: Barber ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Check-in input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/barber.CheckinInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/barber.CheckinOutput'
+      summary: Add check-in
+      tags:
+      - barber
 swagger: "2.0"

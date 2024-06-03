@@ -1,19 +1,22 @@
 package admin
 
+import "time"
+
 // Admin is the struct that represents the admin user
 type Admin struct {
-	ID       *int    `converter:"id" sql:"adm.id"`
-	Username *string `converter:"username" sql:"adm.username"`
-	Password *string `converter:"password" sql:"adm.password"`
+	ID        *int       `converter:"id" sql:"adm.id"`
+	Username  *string    `converter:"username" sql:"adm.username"`
+	Password  *string    `converter:"password" sql:"adm.password"`
+	DeletedAt *time.Time `converter:"deleted_at" sql:"adm.deleted_at"`
 }
 
-// FilterListAdmins is the struct that represents the filter for the list of admins
-type FilterListAdmins struct {
+// FilterList is the struct that represents the filter for the list of admins
+type FilterList struct {
 	Username *string `converter:"username"`
 }
 
-// PagAdmin is the struct that represents the paginated list of admins
-type PagAdmin struct {
+// Pag is the struct that represents the paginated list of admins
+type Pag struct {
 	Data  []Admin
 	Next  *bool
 	Count *int

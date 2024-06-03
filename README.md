@@ -65,8 +65,14 @@ erDiagram
     BARBER {
         int id
         string name
-        string photo
-        boolean is_working
+        string photo_url
+        string commission_rate
+    }
+    
+    BARBER_CHECKIN {
+        int id
+        int barber_id
+        datetime date_time
     }
     
     SERVICE {
@@ -101,6 +107,7 @@ erDiagram
     BARBER ||--o{ APPOINTMENT : "performs"
     SERVICE ||--o{ APPOINTMENT : "included in"
     BARBER ||--o{ SCHEDULE : "works during"
+    BARBER ||--o{ BARBER_CHECKIN : "checkin"
 ```
 
 ### Rotas da API
@@ -137,28 +144,37 @@ erDiagram
 
 #### Rotas para Barbeiros
 
-- `GET /api/barbers`
+- `GET /api/barber`
     - Descrição: Listar todos os barbeiros.
     - Resposta: Lista de barbeiros.
 
-- `GET /api/barbers/:id`
+- `GET /api/barber/:id`
     - Descrição: Ver detalhes de um barbeiro.
     - Resposta: Detalhes do barbeiro.
 
-- `POST /api/barbers`
+- `POST /api/barber`
     - Descrição: Criar um novo barbeiro.
     - Parâmetros: `name`, `photo`, `commission_rate`
     - Resposta: Detalhes do barbeiro criado.
 
-- `PUT /api/barbers/:id`
+- `PUT /api/barber/:id`
     - Descrição: Atualizar os dados de um barbeiro.
-    - Parâmetros: `name`, `photo`, `is_working`, `commission_rate`
+    - Parâmetros: `name`, `photo`, `commission_rate`
     - Resposta: Detalhes do barbeiro atualizado.
 
-- `DELETE /api/barbers/:id`
+- `DELETE /api/barber/:id`
     - Descrição: Deletar um barbeiro.
     - Resposta: Status de sucesso.
-''
+
+- `POST /api/barber/:id/checkin`
+    - Descrição: Registrar checkin de um barbeiro.
+    - Resposta: Detalhes do checkin.
+    - parâmetros: `date_time`, `barber_id`
+
+- `GET /api/barber/:id/checkin`
+    - Descrição: Listar checkins de um barbeiro.
+    - Resposta: Lista de checkins.
+
 #### Rotas para Serviços
 
 - `GET /api/services`

@@ -9,7 +9,7 @@ import (
 )
 
 // List is the function that lists all admins
-func List(params *utils.RequestParams) (*AdminPagOutput, error) {
+func List(params *utils.RequestParams) (*PagOutput, error) {
 	tx, err := database.NewTransaction(true)
 	if err != nil {
 		return nil, sorry.Err(err)
@@ -23,12 +23,12 @@ func List(params *utils.RequestParams) (*AdminPagOutput, error) {
 		return nil, sorry.Err(err)
 	}
 
-	res := new(AdminPagOutput)
+	res := new(PagOutput)
 	if err = utils.ConvertStruct(admins, res); err != nil {
 		return nil, sorry.Err(err)
 	}
 
-	res.Data = make([]AdminOutput, len(admins.Data))
+	res.Data = make([]Output, len(admins.Data))
 	for i := range admins.Data {
 		if err = utils.ConvertStruct(&admins.Data[i], &res.Data[i]); err != nil {
 			return nil, sorry.Err(err)
@@ -39,7 +39,7 @@ func List(params *utils.RequestParams) (*AdminPagOutput, error) {
 }
 
 // Get is the function that gets an admin by its ID
-func Get(id *int) (*AdminOutput, error) {
+func Get(id *int) (*Output, error) {
 	tx, err := database.NewTransaction(true)
 	if err != nil {
 		return nil, sorry.Err(err)
@@ -57,7 +57,7 @@ func Get(id *int) (*AdminOutput, error) {
 		return nil, sorry.NewErr("admin not found")
 	}
 
-	res := new(AdminOutput)
+	res := new(Output)
 	if err = utils.ConvertStruct(adm, res); err != nil {
 		return nil, sorry.Err(err)
 	}
@@ -66,7 +66,7 @@ func Get(id *int) (*AdminOutput, error) {
 }
 
 // Add is the function that adds an admin
-func Add(input *AdminInput) (*AdminOutput, error) {
+func Add(input *Input) (*Output, error) {
 	tx, err := database.NewTransaction(false)
 	if err != nil {
 		return nil, sorry.Err(err)
@@ -89,7 +89,7 @@ func Add(input *AdminInput) (*AdminOutput, error) {
 		return nil, sorry.Err(err)
 	}
 
-	res := new(AdminOutput)
+	res := new(Output)
 	if err = utils.ConvertStruct(adm, res); err != nil {
 		return nil, sorry.Err(err)
 	}
@@ -110,7 +110,7 @@ func Add(input *AdminInput) (*AdminOutput, error) {
 }
 
 // Update is the function that updates an admin
-func Update(id *int, input *AdminUpdateInput) (*AdminOutput, error) {
+func Update(id *int, input *UpdateInput) (*Output, error) {
 	tx, err := database.NewTransaction(false)
 	if err != nil {
 		return nil, sorry.Err(err)
@@ -137,7 +137,7 @@ func Update(id *int, input *AdminUpdateInput) (*AdminOutput, error) {
 		return nil, sorry.Err(err)
 	}
 
-	res := new(AdminOutput)
+	res := new(Output)
 	if err = utils.ConvertStruct(adm, res); err != nil {
 		return nil, sorry.Err(err)
 	}

@@ -40,7 +40,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/admin.AdminPagOutput"
+                            "$ref": "#/definitions/admin.PagOutput"
                         }
                     }
                 }
@@ -64,7 +64,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/admin.AdminInput"
+                            "$ref": "#/definitions/admin.Input"
                         }
                     }
                 ],
@@ -72,7 +72,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/admin.AdminOutput"
+                            "$ref": "#/definitions/admin.Output"
                         }
                     }
                 }
@@ -104,7 +104,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/admin.AdminOutput"
+                            "$ref": "#/definitions/admin.Output"
                         }
                     }
                 }
@@ -135,7 +135,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/admin.AdminUpdateInput"
+                            "$ref": "#/definitions/admin.UpdateInput"
                         }
                     }
                 ],
@@ -143,7 +143,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/admin.AdminOutput"
+                            "$ref": "#/definitions/admin.Output"
                         }
                     }
                 }
@@ -209,10 +209,254 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/barber": {
+            "get": {
+                "description": "List all barbers",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "barber"
+                ],
+                "summary": "List barbers",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "full or partial barber name",
+                        "name": "name",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/barber.PagOutput"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add a new barber",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "barber"
+                ],
+                "summary": "Add barber",
+                "parameters": [
+                    {
+                        "description": "Barber input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/barber.Input"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/barber.Output"
+                        }
+                    }
+                }
+            }
+        },
+        "/barber/{id}": {
+            "get": {
+                "description": "Get barber by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "barber"
+                ],
+                "summary": "Get barber",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Barber ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/barber.Output"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update barber by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "barber"
+                ],
+                "summary": "Update barber",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Barber ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Barber update input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/barber.Input"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/barber.Output"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete barber by ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "barber"
+                ],
+                "summary": "Delete barber",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Barber ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
+        "/barber/{id}/checkin": {
+            "get": {
+                "description": "Get check-ins for a barber",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "barber"
+                ],
+                "summary": "Get check-ins",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Barber ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Initial date",
+                        "name": "initial_date",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Final date",
+                        "name": "final_date",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/barber.PagCheckinOutput"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Add a check-in for a barber",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "barber"
+                ],
+                "summary": "Add check-in",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Barber ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Check-in input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/barber.CheckinInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/barber.CheckinOutput"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
-        "admin.AdminInput": {
+        "admin.Input": {
             "type": "object",
             "required": [
                 "password",
@@ -227,7 +471,7 @@ const docTemplate = `{
                 }
             }
         },
-        "admin.AdminOutput": {
+        "admin.Output": {
             "type": "object",
             "properties": {
                 "id": {
@@ -238,7 +482,7 @@ const docTemplate = `{
                 }
             }
         },
-        "admin.AdminPagOutput": {
+        "admin.PagOutput": {
             "type": "object",
             "properties": {
                 "count": {
@@ -247,7 +491,7 @@ const docTemplate = `{
                 "data": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/admin.AdminOutput"
+                        "$ref": "#/definitions/admin.Output"
                     }
                 },
                 "next": {
@@ -255,7 +499,7 @@ const docTemplate = `{
                 }
             }
         },
-        "admin.AdminUpdateInput": {
+        "admin.UpdateInput": {
             "type": "object",
             "required": [
                 "password"
@@ -286,6 +530,103 @@ const docTemplate = `{
             "properties": {
                 "token": {
                     "type": "string"
+                }
+            }
+        },
+        "barber.CheckinInput": {
+            "type": "object",
+            "required": [
+                "date_time"
+            ],
+            "properties": {
+                "barberID": {
+                    "type": "integer"
+                },
+                "date_time": {
+                    "type": "string"
+                }
+            }
+        },
+        "barber.CheckinOutput": {
+            "type": "object",
+            "properties": {
+                "barber_id": {
+                    "type": "integer"
+                },
+                "date_time": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "barber.Input": {
+            "type": "object",
+            "required": [
+                "name",
+                "photo_url"
+            ],
+            "properties": {
+                "commission_rate": {
+                    "type": "number"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "photo_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "barber.Output": {
+            "type": "object",
+            "properties": {
+                "commission_rate": {
+                    "type": "number"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "photo_url": {
+                    "type": "string"
+                }
+            }
+        },
+        "barber.PagCheckinOutput": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/barber.CheckinOutput"
+                    }
+                },
+                "next": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "barber.PagOutput": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/barber.Output"
+                    }
+                },
+                "next": {
+                    "type": "boolean"
                 }
             }
         }

@@ -7,7 +7,7 @@ import (
 
 // IAdmin is the interface that defines the methods that the repository should implement
 type IAdmin interface {
-	List(params *utils.RequestParams) (*admin.PagAdmin, error)
+	List(params *utils.RequestParams) (*admin.Pag, error)
 	Get(id *int) (*admin.Admin, error)
 	GetByUsername(username *string) (*admin.Admin, error)
 	Add(adm *admin.Admin) (*int, error)

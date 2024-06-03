@@ -6,6 +6,7 @@ import (
 	_ "backend/docs"
 	"backend/interface/admin"
 	"backend/interface/auth"
+	"backend/interface/barber"
 
 	"log"
 
@@ -34,6 +35,7 @@ func main() {
 	router := gin.Default()
 	admin.RegisterRoutes(router)
 	auth.RegisterRoutes(router)
+	barber.RegisterRoutes(router)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if err := router.Run(":4002"); err != nil {

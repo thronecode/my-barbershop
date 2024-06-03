@@ -1,7 +1,7 @@
 package admin
 
 import (
-	"backend/application/admin"
+	"backend/app/admin"
 	"backend/sorry"
 	"backend/utils"
 
@@ -17,13 +17,13 @@ import (
 // @Tags admin
 // @Accept  json
 // @Produce  json
-// @Param input body admin.AdminInput true "Admin input"
-// @Success 201 {object} admin.AdminOutput
+// @Param input body admin.Input true "Admin input"
+// @Success 201 {object} admin.Output
 // @Router /admin [post]
 func add(c *gin.Context) {
 	var (
-		input  = new(admin.AdminInput)
-		output *admin.AdminOutput
+		input  = new(admin.Input)
+		output *admin.Output
 		err    error
 	)
 
@@ -47,12 +47,12 @@ func add(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param username query string false "full or partial username"
-// @Success 200 {object} admin.AdminPagOutput
+// @Success 200 {object} admin.PagOutput
 // @Router /admin [get]
 func list(c *gin.Context) {
 	var (
 		params utils.RequestParams
-		output *admin.AdminPagOutput
+		output *admin.PagOutput
 		err    error
 	)
 
@@ -76,12 +76,12 @@ func list(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Admin ID"
-// @Success 200 {object} admin.AdminOutput
+// @Success 200 {object} admin.Output
 // @Router /admin/{id} [get]
 func get(c *gin.Context) {
 	var (
 		id     int
-		output *admin.AdminOutput
+		output *admin.Output
 		err    error
 	)
 
@@ -105,14 +105,14 @@ func get(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param id path int true "Admin ID"
-// @Param input body admin.AdminUpdateInput true "Admin update input"
-// @Success 200 {object} admin.AdminOutput
+// @Param input body admin.UpdateInput true "Admin update input"
+// @Success 200 {object} admin.Output
 // @Router /admin/{id} [put]
 func update(c *gin.Context) {
 	var (
 		id     int
-		input  = new(admin.AdminUpdateInput)
-		output *admin.AdminOutput
+		input  = new(admin.UpdateInput)
+		output *admin.Output
 		err    error
 	)
 

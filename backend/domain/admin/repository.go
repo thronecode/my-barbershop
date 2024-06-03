@@ -17,7 +17,7 @@ func New(tx *database.DBTransaction) IAdmin {
 }
 
 // List returns a paginated list of admins
-func (r *repository) List(params *utils.RequestParams) (*admin.PagAdmin, error) {
+func (r *repository) List(params *utils.RequestParams) (*admin.Pag, error) {
 	return r.pg.List(params)
 }
 
