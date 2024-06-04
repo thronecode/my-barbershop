@@ -6,6 +6,8 @@ import (
 	_ "backend/docs"
 	"backend/interface/admin"
 	"backend/interface/auth"
+	"backend/interface/barber"
+	"backend/interface/service"
 
 	"log"
 
@@ -14,7 +16,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
-// @title My Barbershop API
+// @title My BarberShop API
 // @version 1.0
 // @description API for a My BarberShop application
 
@@ -34,6 +36,8 @@ func main() {
 	router := gin.Default()
 	admin.RegisterRoutes(router)
 	auth.RegisterRoutes(router)
+	barber.RegisterRoutes(router)
+	service.RegisterRoutes(router)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if err := router.Run(":4002"); err != nil {

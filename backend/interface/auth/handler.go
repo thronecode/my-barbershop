@@ -1,7 +1,7 @@
 package auth
 
 import (
-	"backend/application/auth"
+	"backend/app/auth"
 	"backend/sorry"
 
 	"net/http"

@@ -1,7 +1,7 @@
-package admin
+package service
 
 import (
-	"backend/app/admin"
+	"backend/app/service"
 	"backend/sorry"
 	"backend/utils"
 
@@ -12,18 +12,18 @@ import (
 )
 
 // add godoc
-// @Summary Add admin
-// @Description Add a new admin
-// @Tags admin
+// @Summary Add service
+// @Description Add a new service
+// @Tags service
 // @Accept  json
 // @Produce  json
-// @Param input body admin.Input true "Admin input"
-// @Success 201 {object} admin.Output
-// @Router /admin [post]
+// @Param input body service.Input true "Service input"
+// @Success 201 {object} service.Output
+// @Router /service [post]
 func add(c *gin.Context) {
 	var (
-		input  = new(admin.Input)
-		output *admin.Output
+		input  = new(service.Input)
+		output *service.Output
 		err    error
 	)
 
@@ -32,7 +32,7 @@ func add(c *gin.Context) {
 		return
 	}
 
-	if output, err = admin.Add(input); err != nil {
+	if output, err = service.Add(input); err != nil {
 		sorry.Handling(c, err)
 		return
 	}
@@ -41,18 +41,18 @@ func add(c *gin.Context) {
 }
 
 // list godoc
-// @Summary List admins
-// @Description List all admins
-// @Tags admin
+// @Summary List services
+// @Description List all services
+// @Tags service
 // @Accept  json
 // @Produce  json
-// @Param username query string false "full or partial username"
-// @Success 200 {object} admin.PagOutput
-// @Router /admin [get]
+// @Param name query string false "full or partial service name"
+// @Success 200 {object} service.PagOutput
+// @Router /service [get]
 func list(c *gin.Context) {
 	var (
 		params utils.RequestParams
-		output *admin.PagOutput
+		output *service.PagOutput
 		err    error
 	)
 
@@ -61,7 +61,7 @@ func list(c *gin.Context) {
 		return
 	}
 
-	if output, err = admin.List(&params); err != nil {
+	if output, err = service.List(&params); err != nil {
 		sorry.Handling(c, err)
 		return
 	}
@@ -70,18 +70,18 @@ func list(c *gin.Context) {
 }
 
 // get godoc
-// @Summary Get admin
-// @Description Get admin by ID
-// @Tags admin
+// @Summary Get service
+// @Description Get service by ID
+// @Tags service
 // @Accept  json
 // @Produce  json
-// @Param id path int true "Admin ID"
-// @Success 200 {object} admin.Output
-// @Router /admin/{id} [get]
+// @Param id path int true "Service ID"
+// @Success 200 {object} service.Output
+// @Router /service/{id} [get]
 func get(c *gin.Context) {
 	var (
 		id     int
-		output *admin.Output
+		output *service.Output
 		err    error
 	)
 
@@ -90,7 +90,7 @@ func get(c *gin.Context) {
 		return
 	}
 
-	if output, err = admin.Get(&id); err != nil {
+	if output, err = service.Get(&id); err != nil {
 		sorry.Handling(c, err)
 		return
 	}
@@ -99,20 +99,20 @@ func get(c *gin.Context) {
 }
 
 // update godoc
-// @Summary Update admin
-// @Description Update admin by ID
-// @Tags admin
+// @Summary Update service
+// @Description Update service by ID
+// @Tags service
 // @Accept  json
 // @Produce  json
-// @Param id path int true "Admin ID"
-// @Param input body admin.UpdateInput true "Admin update input"
-// @Success 200 {object} admin.Output
-// @Router /admin/{id} [put]
+// @Param id path int true "Service ID"
+// @Param input body service.Input true "Service update input"
+// @Success 200 {object} service.Output
+// @Router /service/{id} [put]
 func update(c *gin.Context) {
 	var (
 		id     int
-		input  = new(admin.UpdateInput)
-		output *admin.Output
+		input  = new(service.Input)
+		output *service.Output
 		err    error
 	)
 
@@ -126,7 +126,7 @@ func update(c *gin.Context) {
 		return
 	}
 
-	if output, err = admin.Update(&id, input); err != nil {
+	if output, err = service.Update(&id, input); err != nil {
 		sorry.Handling(c, err)
 		return
 	}
@@ -135,14 +135,14 @@ func update(c *gin.Context) {
 }
 
 // remove godoc
-// @Summary Delete admin
-// @Description Delete admin by ID
-// @Tags admin
+// @Summary Delete service
+// @Description Delete service by ID
+// @Tags service
 // @Accept  json
 // @Produce  json
-// @Param id path int true "Admin ID"
+// @Param id path int true "Service ID"
 // @Success 204
-// @Router /admin/{id} [delete]
+// @Router /service/{id} [delete]
 func remove(c *gin.Context) {
 	var (
 		id  int
@@ -154,7 +154,7 @@ func remove(c *gin.Context) {
 		return
 	}
 
-	if err = admin.Delete(&id); err != nil {
+	if err = service.Delete(&id); err != nil {
 		sorry.Handling(c, err)
 		return
 	}

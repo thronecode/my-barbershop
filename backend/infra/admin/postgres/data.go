@@ -8,6 +8,7 @@ import (
 	"database/sql"
 
 	"errors"
+	"time"
 )
 
 type PGAdmin struct {
@@ -15,12 +16,13 @@ type PGAdmin struct {
 }
 
 // List returns a paginated list of admins
-func (pg *PGAdmin) List(params *utils.RequestParams) (*admin.PagAdmin, error) {
+func (pg *PGAdmin) List(params *utils.RequestParams) (*admin.Pag, error) {
 	query := pg.DB.Builder.
 		Select(utils.GetColumns(admin.Admin{}, &params.Total)...).
-		From("t_admin adm")
+		From("t_admin adm").
+		Where("deleted_at is null")
 
-	var filters admin.FilterListAdmins
+	var filters admin.FilterList
 	err := params.ConvertFilters(&filters)
 	if err != nil {
 		return nil, sorry.Err(err)
@@ -35,7 +37,7 @@ func (pg *PGAdmin) List(params *utils.RequestParams) (*admin.PagAdmin, error) {
 		return nil, sorry.Err(err)
 	}
 
-	return &admin.PagAdmin{
+	return &admin.Pag{
 		Data:  admins.([]admin.Admin),
 		Next:  next,
 		Count: count,
@@ -47,10 +49,11 @@ func (pg *PGAdmin) Get(id *int) (*admin.Admin, error) {
 	var adm admin.Admin
 
 	err := pg.DB.Builder.
-		Select("adm.id as id", "adm.username as username").
+		Select(utils.GetColumns(admin.Admin{}, nil)...).
 		From("t_admin adm").
 		Where("id = ?", id).
-		Scan(&adm.ID, &adm.Username)
+		Where("deleted_at is null").
+		Scan(&adm.ID, &adm.Username, &adm.Password, &adm.DeletedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -69,7 +72,8 @@ func (pg *PGAdmin) GetByUsername(username *string) (*admin.Admin, error) {
 		Select("adm.id as id", "adm.username as username", "adm.password as password").
 		From("t_admin adm").
 		Where("username = ?", username).
-		Scan(&adm.ID, &adm.Username, &adm.Password)
+		Where("deleted_at is null").
+		Scan(&adm.ID, &adm.Username, &adm.Password, &adm.DeletedAt)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, nil
@@ -114,7 +118,8 @@ func (pg *PGAdmin) Update(id *int, password *string) error {
 // Delete deletes an admin
 func (pg *PGAdmin) Delete(id *int) error {
 	_, err := pg.DB.Builder.
-		Delete("t_admin").
+		Update("t_admin").
+		Set("deleted_at", time.Now()).
 		Where("id = ?", id).
 		Exec()
 	if err != nil {
