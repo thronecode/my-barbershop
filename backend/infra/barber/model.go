@@ -2,7 +2,7 @@ package barber
 
 import "time"
 
-// Barber is the struct that represents the barber user
+// Barber is the struct that represents the barber
 type Barber struct {
 	ID             *int       `converter:"id" sql:"bar.id"`
 	Name           *string    `converter:"name" sql:"bar.name"`

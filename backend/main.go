@@ -28,7 +28,7 @@ func main() {
 	}
 
 	if err := database.OpenConnections(); err != nil {
-		//log.Fatalf("Error connecting to database: %v", err)
+		log.Fatalf("Error connecting to database: %v", err)
 	}
 	defer database.CloseConnections()
 

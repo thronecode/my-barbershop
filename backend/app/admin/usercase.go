@@ -3,7 +3,6 @@ package admin
 import (
 	"backend/config/database"
 	"backend/domain/admin"
-	infra "backend/infra/admin"
 	"backend/sorry"
 	"backend/utils"
 )
@@ -84,7 +83,7 @@ func Add(input *Input) (*Output, error) {
 		return nil, sorry.NewErr("admin already exists")
 	}
 
-	adm := new(infra.Admin)
+	adm := new(admin.Admin)
 	if err = utils.ConvertStruct(input, adm); err != nil {
 		return nil, sorry.Err(err)
 	}

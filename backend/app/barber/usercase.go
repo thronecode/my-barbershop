@@ -3,7 +3,6 @@ package barber
 import (
 	"backend/config/database"
 	"backend/domain/barber"
-	infra "backend/infra/barber"
 	"backend/sorry"
 	"backend/utils"
 )
@@ -75,7 +74,7 @@ func Add(input *Input) (*Output, error) {
 
 	barberRepo := barber.New(tx)
 
-	bar := new(infra.Barber)
+	bar := new(barber.Barber)
 	if err = utils.ConvertStruct(input, bar); err != nil {
 		return nil, sorry.Err(err)
 	}
@@ -115,7 +114,7 @@ func Update(id *int, input *Input) (*Output, error) {
 		return nil, sorry.NewErr("barber not found")
 	}
 
-	data := new(infra.Barber)
+	data := new(barber.Barber)
 	if err = utils.ConvertStruct(input, data); err != nil {
 		return nil, sorry.Err(err)
 	}
@@ -176,7 +175,7 @@ func AddCheckin(input *CheckinInput) (*CheckinOutput, error) {
 		return nil, sorry.NewErr("barber not found")
 	}
 
-	checkin := new(infra.Checkin)
+	checkin := new(barber.Checkin)
 	if err = utils.ConvertStruct(input, checkin); err != nil {
 		return nil, sorry.Err(err)
 	}

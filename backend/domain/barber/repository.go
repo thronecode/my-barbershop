@@ -17,23 +17,60 @@ func New(tx *database.DBTransaction) IBarber {
 }
 
 // List returns a paginated list of barbers
-func (r *repository) List(params *utils.RequestParams) (*barber.Pag, error) {
-	return r.pg.List(params)
+func (r *repository) List(params *utils.RequestParams) (*Pag, error) {
+	data, err := r.pg.List(params)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &Pag{
+		Data:  make([]Barber, len(data.Data)),
+		Next:  data.Next,
+		Count: data.Count,
+	}
+
+	for i := range data.Data {
+		if err = utils.ConvertStruct(&data.Data[i], &res.Data[i]); err != nil {
+			return nil, err
+		}
+	}
+
+	return res, nil
 }
 
 // Get returns a barber by its id
-func (r *repository) Get(id *int) (*barber.Barber, error) {
-	return r.pg.Get(id)
+func (r *repository) Get(id *int) (*Barber, error) {
+	data, err := r.pg.Get(id)
+	if err != nil {
+		return nil, err
+	}
+
+	res := new(Barber)
+	if err = utils.ConvertStruct(data, res); err != nil {
+		return nil, err
+	}
+
+	return res, nil
 }
 
 // Add adds a new barber
-func (r *repository) Add(bar *barber.Barber) (*int, error) {
-	return r.pg.Add(bar)
+func (r *repository) Add(bar *Barber) (*int, error) {
+	data := new(barber.Barber)
+	if err := utils.ConvertStruct(bar, data); err != nil {
+		return nil, err
+	}
+
+	return r.pg.Add(data)
 }
 
 // Update updates a barber's information
-func (r *repository) Update(id *int, bar *barber.Barber) error {
-	return r.pg.Update(id, bar)
+func (r *repository) Update(id *int, bar *Barber) error {
+	data := new(barber.Barber)
+	if err := utils.ConvertStruct(bar, data); err != nil {
+		return err
+	}
+
+	return r.pg.Update(id, data)
 }
 
 // Delete deletes a barber
@@ -42,11 +79,33 @@ func (r *repository) Delete(id *int) error {
 }
 
 // AddCheckin adds a new check-in for a barber
-func (r *repository) AddCheckin(checkin *barber.Checkin) (*int, error) {
-	return r.pg.AddCheckin(checkin)
+func (r *repository) AddCheckin(checkin *Checkin) (*int, error) {
+	data := new(barber.Checkin)
+	if err := utils.ConvertStruct(checkin, data); err != nil {
+		return nil, err
+	}
+
+	return r.pg.AddCheckin(data)
 }
 
 // GetCheckins returns a list of check-ins for a barber
-func (r *repository) GetCheckins(barberID *int, params *utils.RequestParams) (*barber.PagCheckin, error) {
-	return r.pg.GetCheckins(barberID, params)
+func (r *repository) GetCheckins(barberID *int, params *utils.RequestParams) (*PagCheckin, error) {
+	data, err := r.pg.GetCheckins(barberID, params)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &PagCheckin{
+		Data:  make([]Checkin, len(data.Data)),
+		Next:  data.Next,
+		Count: data.Count,
+	}
+
+	for i := range data.Data {
+		if err = utils.ConvertStruct(&data.Data[i], &res.Data[i]); err != nil {
+			return nil, err
+		}
+	}
+
+	return res, nil
 }

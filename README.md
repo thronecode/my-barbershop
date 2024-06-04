@@ -1,56 +1,32 @@
-[//]: # (rascunho do projeto)
-
-[//]: # (O sistema terá uma área de adm &#40;com login&#41;, onde o adm pode cadastrar barbeiros e serviços, os barbeiros tem nome e)
-
-[//]: # (foto, e os serviços tem nome, duração media e tipo fixo &#40;barba, cabelo, sobrancelha&#41;, o adm tem uma tela onde pode ver)
-
-[//]: # (os barbeiros colocar se o barbeiro tá ou não trabalhando no momento e cadastrar um atendimento, onde ele seleciona os)
-
-[//]: # (serviços e o barbeiro que vai fazer o nome do cliente, ou alocar pra o que está a mais tempo sem um atendimento, o)
-
-[//]: # (atendimento também deve ter um botao pra iniciar e concluir o atendimento.)
-
-[//]: # (O adm também tem uma parte de agendas, onde pode cadastrar agendas dos barbeiros de forma pré-definida &#40;pra não ter que)
-
-[//]: # (ficar colocando se o barbeiro está ou não trabalhando&#41;)
-
-[//]: # ()
-
-[//]: # (O sistema também terá uma tela para clientes &#40;sem login&#41; onde o cliente pode verificar a agenda dos barbeiros e)
-
-[//]: # (visualizar se tem alguma fila de atendimentos pra aquele barbeiro no momento e quanto tempo demora pra ficar livre.)
-
-[//]: # ()
-
 ### Requisitos do Sistema para a Barbearia (my-barbershop)
 
 #### Funcionalidades Principais:
 
 1. **Área de Administração (ADM):**
-    - **Login de administrador:**
-        - Criação e lisagem, atualização e remoção de administradores.
+    - **Login e gerenciamento de administradores:**
+        - Criar, listar, atualizar e remover administradores.
         - Autenticação e autorização de administradores.
-    - **Cadastro de barbeiros:**
-        - Nome
-        - Foto
+
+    - **Gerenciamento de barbeiros:**
+        - Criar, listar, atualizar e remover barbeiros.
+        - Fazer check-in de barbeiros e listar check-ins.
+        - TODO: Adicionar serviços que o barbeiro realiza.
+
     - **Gerenciamento de serviços:**
-        - Nome
-        - Duração média
-        - Tipo (barba, cabelo, sobrancelha)
-    - **Gerenciamento de disponibilidade de barbeiros:**
-        - Indicar se o barbeiro está trabalhando no momento ou não.
-    - **Cadastro de atendimentos:**
-        - Nome do cliente
-        - Seleção de serviços
-        - Seleção de barbeiros ou alocação automática para o barbeiro que está há mais tempo sem atendimento.
-        - Botão para iniciar e concluir o atendimento.
-    - **Gerenciamento de agendas:**
+        - Criar, listar, atualizar e remover serviços.
+
+    - **TODO: Cadastro de atendimentos:**
+        - Criar, listar, iniciar, concluir e remover atendimentos.
+
+    - **TODO: Gerenciamento de agendas:**
         - Cadastro de horários de trabalho pré-definidos para barbeiros.
 
-2. **Área para Clientes:**
+2. **TODO: Área para Clientes:**
     - Visualização da agenda dos barbeiros.
     - Visualização da fila de atendimentos para cada barbeiro.
     - Estimativa do tempo de espera.
+    - Visualização dos serviços oferecidos.
+    - Visualização se barbeiro fez check-in.
 
 ### Diagrama do Banco de Dados
 
@@ -60,13 +36,15 @@ erDiagram
         int id
         string username
         string password
+        datetime deleted_at
     }
     
     BARBER {
         int id
         string name
         string photo_url
-        string commission_rate
+        float commission_rate
+        datetime deleted_at
     }
     
     BARBER_CHECKIN {
@@ -80,13 +58,14 @@ erDiagram
         string name
         string description
         int duration
-        string kinds
-        boolean is_combo
         float price
         float commission_rate
+        boolean is_combo
+        string kinds
+        datetime deleted_at
     }
     
-    APPOINTMENT {
+    TODO_APPOINTMENT {
         int id
         int barber_id
         int service_id
@@ -95,7 +74,7 @@ erDiagram
         datetime end_time
     }
     
-    SCHEDULE {
+    TODO_SCHEDULE {
         int id
         int barber_id
         datetime start_time
@@ -104,9 +83,9 @@ erDiagram
 
     ADMIN ||--o{ BARBER : "manages"
     ADMIN ||--o{ SERVICE : "manages"
-    BARBER ||--o{ APPOINTMENT : "performs"
-    SERVICE ||--o{ APPOINTMENT : "included in"
-    BARBER ||--o{ SCHEDULE : "works during"
+    BARBER ||--o{ TODO_APPOINTMENT : "performs"
+    SERVICE ||--o{ TODO_APPOINTMENT : "included in"
+    BARBER ||--o{ TODO_SCHEDULE : "works during"
     BARBER ||--o{ BARBER_CHECKIN : "checkin"
 ```
 
@@ -116,13 +95,11 @@ erDiagram
 
 - `POST /api/admin`
     - Descrição: Criar um administrador.
-    - Parâmetros: `username`, `password`
     - Resposta: Detalhes do barbeiro criado.
-    - Observação: Rota protegida por autenticação com chave.
 
 - `GET /api/admin`
     - Descrição: Listar administradores.
-    - Resposta: Lista administradores.
+    - Resposta: Lista de administradores.
 
 - `GET /api/admin/:id`
     - Descrição: Ver detalhes de um administrador.
@@ -130,7 +107,6 @@ erDiagram
 
 - `PUT /api/admin/:id`
     - Descrição: Atualizar os dados de um administrador.
-    - Parâmetros: `password`
     - Resposta: Detalhes do administrador atualizado.
 
 - `DELETE /api/admin/:id`
@@ -139,7 +115,6 @@ erDiagram
 
 - `POST /api/auth/login`
     - Descrição: Autenticar o administrador.
-    - Parâmetros: `username`, `password`
     - Resposta: Token de autenticação.
 
 #### Rotas para Barbeiros
@@ -154,12 +129,10 @@ erDiagram
 
 - `POST /api/barber`
     - Descrição: Criar um novo barbeiro.
-    - Parâmetros: `name`, `photo`, `commission_rate`
     - Resposta: Detalhes do barbeiro criado.
 
 - `PUT /api/barber/:id`
     - Descrição: Atualizar os dados de um barbeiro.
-    - Parâmetros: `name`, `photo`, `commission_rate`
     - Resposta: Detalhes do barbeiro atualizado.
 
 - `DELETE /api/barber/:id`
@@ -167,84 +140,78 @@ erDiagram
     - Resposta: Status de sucesso.
 
 - `POST /api/barber/:id/checkin`
-    - Descrição: Registrar checkin de um barbeiro.
-    - Resposta: Detalhes do checkin.
-    - parâmetros: `date_time`, `barber_id`
+    - Descrição: Registrar check-in de um barbeiro.
+    - Resposta: Detalhes do check-in.
 
 - `GET /api/barber/:id/checkin`
-    - Descrição: Listar checkins de um barbeiro.
-    - Resposta: Lista de checkins.
+    - Descrição: Listar check-ins de um barbeiro.
+    - Resposta: Lista de check-ins.
 
 #### Rotas para Serviços
 
-- `GET /api/services`
+- `GET /api/service`
     - Descrição: Listar todos os serviços.
     - Resposta: Lista de serviços.
 
-- `GET /api/services/:id`
+- `GET /api/service/:id`
     - Descrição: Ver detalhes de um serviço.
     - Resposta: Detalhes do serviço.
 
-- `POST /api/services`
+- `POST /api/service`
     - Descrição: Criar um novo serviço.
-    - Parâmetros: `name`, `description`, `duration`, `kinds`, `is_combo`, `price`, `commission_rate`
     - Resposta: Detalhes do serviço criado.
 
-- `PUT /api/services/:id`
+- `PUT /api/service/:id`
     - Descrição: Atualizar os dados de um serviço.
-    - Parâmetros: `name`, `description`, `duration`, `kinds`, `is_combo`, `price`, `commission_rate`
     - Resposta: Detalhes do serviço atualizado.
 
-- `DELETE /api/services/:id`
+- `DELETE /api/service/:id`
     - Descrição: Deletar um serviço.
     - Resposta: Status de sucesso.
 
-#### Rotas para Atendimentos
+#### TODO: Rotas para Atendimentos
 
-- `GET /api/appointments`
+- `GET /api/appointment`
     - Descrição: Listar todos os atendimentos.
     - Resposta: Lista de atendimentos.
 
-- `POST /api/appointments`
+- `POST /api/appointment`
     - Descrição: Criar um novo atendimento.
-    - Parâmetros: `barber_id`, `service_id`, `client_name`
     - Resposta: Detalhes do atendimento criado.
 
-- `PUT /api/appointments/:id/start`
+- `PUT /api/appointment/:id/start`
     - Descrição: Iniciar um atendimento.
     - Resposta: Detalhes do atendimento atualizado.
 
-- `PUT /api/appointments/:id/complete`
+- `PUT /api/appointment/:id/complete`
     - Descrição: Concluir um atendimento.
     - Resposta: Detalhes do atendimento atualizado.
 
-- `DELETE /api/appointments/:id`
+- `DELETE /api/appointment/:id`
     - Descrição: Deletar um atendimento.
     - Resposta: Status de sucesso.
 
-#### Rotas para Agendas
+#### TODO: Rotas para Agendas
 
-- `GET /api/schedules`
+- `GET /api/schedule`
     - Descrição: Listar todas as agendas.
     - Resposta: Lista de agendas.
 
-- `POST /api/schedules`
+- `POST /api/schedule`
     - Descrição: Criar uma nova agenda.
-    - Parâmetros: `barber_id`, `start_time`, `end_time`
     - Resposta: Detalhes da agenda criada.
 
-- `PUT /api/schedules/:id`
+- `PUT /api/schedule/:id`
     - Descrição: Atualizar os dados de uma agenda.
-    - Parâmetros: `barber_id`, `start_time`, `end_time`
     - Resposta: Detalhes da agenda atualizada.
 
-- `DELETE /api/schedules/:id`
+- `DELETE /api/schedule/:id`
     - Descrição: Deletar uma agenda.
     - Resposta: Status de sucesso.
 
-#### Rotas para Clientes
+#### TODO: Rotas para Clientes
 
-- `GET /api/public/barbers`
+- `GET /api/public/barber`
     - Descrição: Listar todos os barbeiros com suas agendas.
     - Resposta: Lista de barbeiros e suas agendas.
 
