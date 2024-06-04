@@ -6,5 +6,5 @@ This is a project to manage a barbershop. It is a fullstack project with a backe
 ![Next JS](https://img.shields.io/badge/Next-black?style=for-the-badge&logo=next.js&logoColor=white)
 ![Postgres](https://img.shields.io/badge/postgres-%23316192.svg?style=for-the-badge&logo=postgresql&logoColor=white)
 
-#### Requisitos: [clique aqui.](REQUIREMENTS.md)
+#### Requirements: [clique aqui.](REQUIREMENTS.md)
 #### Trello board: [clique aqui.](https://trello.com/b/WkzG92W8/my-barbershop)
