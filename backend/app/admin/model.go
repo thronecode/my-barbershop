@@ -19,7 +19,7 @@ type Output struct {
 
 // PagOutput is the struct that represents the paginated list of admins
 type PagOutput struct {
-	Data  []Output `json:"data,omitempty" converter:"data"`
+	Data  []Output `json:"data,omitempty"`
 	Next  *bool    `json:"next,omitempty" converter:"next"`
 	Count *int64   `json:"count,omitempty" converter:"count"`
 }

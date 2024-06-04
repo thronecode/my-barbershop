@@ -113,6 +113,61 @@ definitions:
       next:
         type: boolean
     type: object
+  service.Input:
+    properties:
+      commission_rate:
+        type: number
+      description:
+        type: string
+      duration:
+        type: integer
+      is_combo:
+        type: boolean
+      kinds:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      price:
+        type: number
+    required:
+    - duration
+    - name
+    - price
+    type: object
+  service.Output:
+    properties:
+      commission_rate:
+        type: number
+      description:
+        type: string
+      duration:
+        type: integer
+      id:
+        type: integer
+      is_combo:
+        type: boolean
+      kinds:
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      price:
+        type: number
+    type: object
+  service.PagOutput:
+    properties:
+      count:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/service.Output'
+        type: array
+      next:
+        type: boolean
+    type: object
 host: localhost:4002
 info:
   contact: {}
@@ -409,4 +464,110 @@ paths:
       summary: Add check-in
       tags:
       - barber
+  /service:
+    get:
+      consumes:
+      - application/json
+      description: List all services
+      parameters:
+      - description: full or partial service name
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service.PagOutput'
+      summary: List services
+      tags:
+      - service
+    post:
+      consumes:
+      - application/json
+      description: Add a new service
+      parameters:
+      - description: Service input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service.Input'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/service.Output'
+      summary: Add service
+      tags:
+      - service
+  /service/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete service by ID
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete service
+      tags:
+      - service
+    get:
+      consumes:
+      - application/json
+      description: Get service by ID
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service.Output'
+      summary: Get service
+      tags:
+      - service
+    put:
+      consumes:
+      - application/json
+      description: Update service by ID
+      parameters:
+      - description: Service ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Service update input
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/service.Input'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/service.Output'
+      summary: Update service
+      tags:
+      - service
 swagger: "2.0"

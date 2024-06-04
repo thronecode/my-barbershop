@@ -17,7 +17,7 @@ type Output struct {
 
 // PagOutput is the struct that represents the paginated list of barbers
 type PagOutput struct {
-	Data  []Output `json:"data,omitempty" converter:"data"`
+	Data  []Output `json:"data,omitempty"`
 	Next  *bool    `json:"next,omitempty" converter:"next"`
 	Count *int64   `json:"count,omitempty" converter:"count"`
 }
@@ -37,7 +37,7 @@ type CheckinOutput struct {
 
 // PagCheckinOutput is the struct that represents the paginated list of checkins
 type PagCheckinOutput struct {
-	Data  []CheckinOutput `json:"data,omitempty" converter:"data"`
+	Data  []CheckinOutput `json:"data,omitempty"`
 	Next  *bool           `json:"next,omitempty" converter:"next"`
 	Count *int64          `json:"count,omitempty" converter:"count"`
 }

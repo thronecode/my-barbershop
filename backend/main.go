@@ -7,6 +7,7 @@ import (
 	"backend/interface/admin"
 	"backend/interface/auth"
 	"backend/interface/barber"
+	"backend/interface/service"
 
 	"log"
 
@@ -36,6 +37,7 @@ func main() {
 	admin.RegisterRoutes(router)
 	auth.RegisterRoutes(router)
 	barber.RegisterRoutes(router)
+	service.RegisterRoutes(router)
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	if err := router.Run(":4002"); err != nil {

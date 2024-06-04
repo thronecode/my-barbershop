@@ -13,6 +13,6 @@ type Admin struct {
 // Pag is the struct that represents the paginated list of admins
 type Pag struct {
 	Data  []Admin
-	Next  *bool
-	Count *int
+	Next  *bool `converter:"next"`
+	Count *int  `converter:"count"`
 }

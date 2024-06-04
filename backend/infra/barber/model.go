@@ -19,8 +19,8 @@ type FilterList struct {
 // Pag is the struct that represents the paginated list of barbers
 type Pag struct {
 	Data  []Barber
-	Next  *bool
-	Count *int
+	Next  *bool `converter:"next"`
+	Count *int  `converter:"count"`
 }
 
 // Checkin is the struct that represents the checkin of a barber
@@ -39,6 +39,6 @@ type FilterCheckinList struct {
 // PagCheckin is the struct that represents the paginated list of checkins
 type PagCheckin struct {
 	Data  []Checkin
-	Next  *bool
-	Count *int
+	Next  *bool `converter:"next"`
+	Count *int  `converter:"count"`
 }
