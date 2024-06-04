@@ -10,7 +10,7 @@
     - **Gerenciamento de barbeiros:**
         - Criar, listar, atualizar e remover barbeiros.
         - Fazer check-in de barbeiros e listar check-ins.
-        - TODO: Adicionar serviços que o barbeiro realiza.
+        - Adicionar serviços que o barbeiro realiza.
 
     - **Gerenciamento de serviços:**
         - Criar, listar, atualizar e remover serviços.
