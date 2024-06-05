@@ -17,5 +17,7 @@ func RegisterRoutes(router *gin.Engine) {
 		barber.DELETE("/:id", remove)
 		barber.POST("/:id/checkin", addCheckin)
 		barber.GET("/:id/checkin", getCheckins)
+		barber.POST("/:id/service", addService)
+		barber.DELETE("/:id/service/:service_id", removeService)
 	}
 }
