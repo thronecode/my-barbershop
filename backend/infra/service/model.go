@@ -15,9 +15,10 @@ type Service struct {
 
 // FilterList is a struct that represents the filter for the list of services
 type FilterList struct {
-	Name    *string  `converter:"name"`
-	Kinds   []string `converter:"kinds"`
-	IsCombo *bool    `converter:"is_combo"`
+	Name     *string  `converter:"name"`
+	Kinds    []string `converter:"kinds"`
+	IsCombo  *bool    `converter:"is_combo"`
+	BarberID *int     `converter:"barber_id"`
 }
 
 // Pag is a struct that represents the paginated list of services

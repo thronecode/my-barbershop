@@ -454,6 +454,80 @@ const docTemplate = `{
                 }
             }
         },
+        "/barber/{id}/service": {
+            "post": {
+                "description": "Add a service to a barber",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "barber"
+                ],
+                "summary": "Add service to barber",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Barber ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Service input",
+                        "name": "input",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/barber.ServiceInput"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        },
+        "/barber/{id}/service/{service_id}": {
+            "delete": {
+                "description": "Remove a service from a barber",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "barber"
+                ],
+                "summary": "Remove service from barber",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Barber ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Service ID",
+                        "name": "service_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
         "/service": {
             "get": {
                 "description": "List all services",
@@ -472,6 +546,28 @@ const docTemplate = `{
                         "type": "string",
                         "description": "full or partial service name",
                         "name": "name",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "barber ID",
+                        "name": "barber_id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "boolean",
+                        "description": "is combo",
+                        "name": "is_combo",
+                        "in": "query"
+                    },
+                    {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "collectionFormat": "csv",
+                        "description": "kinds",
+                        "name": "kinds",
                         "in": "query"
                     }
                 ],
@@ -791,10 +887,25 @@ const docTemplate = `{
                 }
             }
         },
+        "barber.ServiceInput": {
+            "type": "object",
+            "required": [
+                "services"
+            ],
+            "properties": {
+                "services": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "service.Input": {
             "type": "object",
             "required": [
                 "duration",
+                "kinds",
                 "name",
                 "price"
             ],
@@ -814,7 +925,13 @@ const docTemplate = `{
                 "kinds": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "enum": [
+                            "haircut",
+                            "shave",
+                            "beard",
+                            "eyebrow"
+                        ]
                     }
                 },
                 "name": {

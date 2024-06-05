@@ -37,6 +37,9 @@ func (pg *PGService) List(params *utils.RequestParams) (*service.Pag, error) {
 	if filters.IsCombo != nil {
 		query = query.Where("is_combo = ?", filters.IsCombo)
 	}
+	if filters.BarberID != nil {
+		query = query.Join("t_barber_service bser on ser.id = bser.service_id and bser.barber_id = ?", filters.BarberID)
+	}
 
 	services, next, count, err := utils.MakePaginatedList(service.Service{}, &query, params)
 	if err != nil {
@@ -133,6 +136,21 @@ func (pg *PGService) Delete(id *int) error {
 		Update("t_service").
 		Set("deleted_at", time.Now()).
 		Where("id = ?", id).
+		Where("deleted_at is null").
+		Exec()
+	if err != nil {
+		return sorry.Err(err)
+	}
+
+	return nil
+}
+
+// AddPriceHistory adds a new price history for a service
+func (pg *PGService) AddPriceHistory(serviceID *int, price *float64) error {
+	_, err := pg.DB.Builder.
+		Insert("t_service_price_history").
+		Columns("service_id", "price", "date_time").
+		Values(serviceID, price, time.Now()).
 		Exec()
 	if err != nil {
 		return sorry.Err(err)
