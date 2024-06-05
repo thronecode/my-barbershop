@@ -121,6 +121,7 @@ func (pg *PGAdmin) Delete(id *int) error {
 		Update("t_admin").
 		Set("deleted_at", time.Now()).
 		Where("id = ?", id).
+		Where("deleted_at is null").
 		Exec()
 	if err != nil {
 		return sorry.Err(err)
