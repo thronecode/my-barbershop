@@ -228,3 +228,73 @@ func getCheckins(c *gin.Context) {
 
 	c.JSON(http.StatusOK, output)
 }
+
+// addService godoc
+// @Summary Add service to barber
+// @Description Add a service to a barber
+// @Tags barber
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Barber ID"
+// @Param input body barber.ServiceInput true "Service input"
+// @Success 201
+// @Router /barber/{id}/service [post]
+func addService(c *gin.Context) {
+	var (
+		id    int
+		input = new(barber.ServiceInput)
+		err   error
+	)
+
+	if id, err = strconv.Atoi(c.Param("id")); err != nil {
+		sorry.Handling(c, err)
+		return
+	}
+
+	if err = c.ShouldBindJSON(input); err != nil {
+		sorry.Handling(c, err)
+		return
+	}
+
+	if err = barber.AddService(&id, input.Services); err != nil {
+		sorry.Handling(c, err)
+		return
+	}
+
+	c.JSON(http.StatusCreated, nil)
+}
+
+// removeService godoc
+// @Summary Remove service from barber
+// @Description Remove a service from a barber
+// @Tags barber
+// @Accept  json
+// @Produce  json
+// @Param id path int true "Barber ID"
+// @Param service_id path int true "Service ID"
+// @Success 204
+// @Router /barber/{id}/service/{service_id} [delete]
+func removeService(c *gin.Context) {
+	var (
+		id        int
+		serviceID int
+		err       error
+	)
+
+	if id, err = strconv.Atoi(c.Param("id")); err != nil {
+		sorry.Handling(c, err)
+		return
+	}
+
+	if serviceID, err = strconv.Atoi(c.Param("service_id")); err != nil {
+		sorry.Handling(c, err)
+		return
+	}
+
+	if err = barber.DeleteService(&id, &serviceID); err != nil {
+		sorry.Handling(c, err)
+		return
+	}
+
+	c.JSON(http.StatusNoContent, nil)
+}

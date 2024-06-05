@@ -97,6 +97,10 @@ func Add(input *Input) (*Output, error) {
 		return nil, sorry.Err(err)
 	}
 
+	if err = serviceRepo.AddPriceHistory(res.ID, res.Price); err != nil {
+		return nil, sorry.Err(err)
+	}
+
 	if err = tx.Commit(); err != nil {
 		return nil, sorry.Err(err)
 	}
@@ -121,6 +125,12 @@ func Update(id *int, input *Input) (*Output, error) {
 
 	if ser == nil {
 		return nil, sorry.NewErr("service not found")
+	}
+
+	if ser.Price != nil && input.Price != nil && *ser.Price != *input.Price {
+		if err = serviceRepo.AddPriceHistory(id, input.Price); err != nil {
+			return nil, sorry.Err(err)
+		}
 	}
 
 	if err = utils.ConvertStruct(input, ser); err != nil {

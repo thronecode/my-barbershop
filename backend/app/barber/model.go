@@ -41,3 +41,8 @@ type PagCheckinOutput struct {
 	Next  *bool           `json:"next,omitempty" converter:"next"`
 	Count *int64          `json:"count,omitempty" converter:"count"`
 }
+
+// ServiceInput is the struct that represents the input for the service
+type ServiceInput struct {
+	Services []int `json:"services" converter:"services" binding:"required"`
+}

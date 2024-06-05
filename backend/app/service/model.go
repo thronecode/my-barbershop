@@ -14,18 +14,18 @@ type Output struct {
 
 // PagOutput represents the paginated output structure for the service entity
 type PagOutput struct {
-	Data  []Output `json:"data"`
-	Next  *bool    `json:"next" converter:"next"`
-	Count *int     `json:"count" converter:"count"`
+	Data  []Output `json:"data,omitempty"`
+	Next  *bool    `json:"next,omitempty" converter:"next"`
+	Count *int     `json:"count,omitempty" converter:"count"`
 }
 
 // Input represents the input structure for creating/updating a service
 type Input struct {
-	Name           *string  `json:"name" validate:"required" converter:"name"`
+	Name           *string  `json:"name" binding:"required" converter:"name"`
 	Description    *string  `json:"description" converter:"description"`
-	Duration       *int     `json:"duration" validate:"required" converter:"duration" validate:"required"`
-	Price          *float64 `json:"price" validate:"required" converter:"price" validate:"required"`
+	Duration       *int     `json:"duration" binding:"required" converter:"duration"`
+	Price          *float64 `json:"price" binding:"required" converter:"price"`
 	CommissionRate *float64 `json:"commission_rate" converter:"commission_rate"`
 	IsCombo        *bool    `json:"is_combo" converter:"is_combo"`
-	Kinds          []string `json:"kinds" converter:"kinds"`
+	Kinds          []string `json:"kinds" converter:"kinds" binding:"required,oneof=haircut shave beard eyebrow"`
 }
