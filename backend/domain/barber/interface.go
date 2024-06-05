@@ -12,6 +12,4 @@ type IBarber interface {
 	Delete(id *int) error
 	AddCheckin(checkin *Checkin) (*int, error)
 	GetCheckins(barberID *int, params *utils.RequestParams) (*PagCheckin, error)
-	AddService(barberID *int, services []int) error
-	DeleteService(barberID *int, serviceID *int) error
 }

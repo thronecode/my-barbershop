@@ -92,8 +92,3 @@ func (r *repository) Update(id *int, ser *Service) error {
 func (r *repository) Delete(id *int) error {
 	return r.pg.Delete(id)
 }
-
-// AddPriceHistory adds a new price history
-func (r *repository) AddPriceHistory(serviceID *int, price *float64) error {
-	return r.pg.AddPriceHistory(serviceID, price)
-}

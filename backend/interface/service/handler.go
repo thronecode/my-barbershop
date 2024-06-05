@@ -47,9 +47,6 @@ func add(c *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Param name query string false "full or partial service name"
-// @Param barber_id query int false "barber ID"
-// @Param is_combo query bool false "is combo"
-// @Param kinds query []string false "kinds"
 // @Success 200 {object} service.PagOutput
 // @Router /service [get]
 func list(c *gin.Context) {
