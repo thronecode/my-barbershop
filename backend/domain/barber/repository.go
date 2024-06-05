@@ -109,13 +109,3 @@ func (r *repository) GetCheckins(barberID *int, params *utils.RequestParams) (*P
 
 	return res, nil
 }
-
-// AddService adds a new service for a barber
-func (r *repository) AddService(barberID *int, services []int) error {
-	return r.pg.AddService(barberID, services)
-}
-
-// DeleteService deletes a service from a barber
-func (r *repository) DeleteService(barberID, serviceID *int) error {
-	return r.pg.DeleteService(barberID, serviceID)
-}

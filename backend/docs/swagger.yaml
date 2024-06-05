@@ -113,15 +113,6 @@ definitions:
       next:
         type: boolean
     type: object
-  barber.ServiceInput:
-    properties:
-      services:
-        items:
-          type: integer
-        type: array
-    required:
-    - services
-    type: object
   service.Input:
     properties:
       commission_rate:
@@ -134,11 +125,6 @@ definitions:
         type: boolean
       kinds:
         items:
-          enum:
-          - haircut
-          - shave
-          - beard
-          - eyebrow
           type: string
         type: array
       name:
@@ -147,7 +133,6 @@ definitions:
         type: number
     required:
     - duration
-    - kinds
     - name
     - price
     type: object
@@ -479,55 +464,6 @@ paths:
       summary: Add check-in
       tags:
       - barber
-  /barber/{id}/service:
-    post:
-      consumes:
-      - application/json
-      description: Add a service to a barber
-      parameters:
-      - description: Barber ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Service input
-        in: body
-        name: input
-        required: true
-        schema:
-          $ref: '#/definitions/barber.ServiceInput'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-      summary: Add service to barber
-      tags:
-      - barber
-  /barber/{id}/service/{service_id}:
-    delete:
-      consumes:
-      - application/json
-      description: Remove a service from a barber
-      parameters:
-      - description: Barber ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Service ID
-        in: path
-        name: service_id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "204":
-          description: No Content
-      summary: Remove service from barber
-      tags:
-      - barber
   /service:
     get:
       consumes:
@@ -538,21 +474,6 @@ paths:
         in: query
         name: name
         type: string
-      - description: barber ID
-        in: query
-        name: barber_id
-        type: integer
-      - description: is combo
-        in: query
-        name: is_combo
-        type: boolean
-      - collectionFormat: csv
-        description: kinds
-        in: query
-        items:
-          type: string
-        name: kinds
-        type: array
       produces:
       - application/json
       responses:

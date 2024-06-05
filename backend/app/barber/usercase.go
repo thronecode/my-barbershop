@@ -3,10 +3,8 @@ package barber
 import (
 	"backend/config/database"
 	"backend/domain/barber"
-	"backend/domain/service"
 	"backend/sorry"
 	"backend/utils"
-	"strconv"
 )
 
 // List is the function that lists all barbers
@@ -235,76 +233,4 @@ func GetCheckins(barberID *int, params *utils.RequestParams) (*PagCheckinOutput,
 	}
 
 	return res, nil
-}
-
-// AddService is the function that adds a service for a barber
-func AddService(barberID *int, services []int) error {
-	tx, err := database.NewTransaction(false)
-	if err != nil {
-		return sorry.Err(err)
-	}
-	defer tx.Rollback()
-
-	barberRepo := barber.New(tx)
-	serviceRepo := service.New(tx)
-
-	bar, err := barberRepo.Get(barberID)
-	if err != nil {
-		return sorry.Err(err)
-	}
-
-	if bar == nil {
-		return sorry.NewErr("barber not found")
-	}
-
-	for i := range services {
-		serv, err := serviceRepo.Get(&services[i])
-		if err != nil {
-			return sorry.Err(err)
-		}
-
-		if serv == nil {
-			return sorry.NewErr("service with id:" + strconv.Itoa(services[i]) + "  not found")
-		}
-	}
-
-	if err = barberRepo.AddService(barberID, services); err != nil {
-		return sorry.Err(err)
-	}
-
-	if err = tx.Commit(); err != nil {
-		return sorry.Err(err)
-	}
-
-	return nil
-}
-
-// DeleteService is the function that deletes a service for a barber
-func DeleteService(barberID, serviceiD *int) error {
-	tx, err := database.NewTransaction(false)
-	if err != nil {
-		return sorry.Err(err)
-	}
-	defer tx.Rollback()
-
-	barberRepo := barber.New(tx)
-
-	bar, err := barberRepo.Get(barberID)
-	if err != nil {
-		return sorry.Err(err)
-	}
-
-	if bar == nil {
-		return sorry.NewErr("barber not found")
-	}
-
-	if err = barberRepo.DeleteService(barberID, serviceiD); err != nil {
-		return sorry.Err(err)
-	}
-
-	if err = tx.Commit(); err != nil {
-		return sorry.Err(err)
-	}
-
-	return nil
 }

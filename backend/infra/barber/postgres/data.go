@@ -103,7 +103,6 @@ func (pg *PGBarber) Delete(id *int) error {
 		Update("t_barber").
 		Set("deleted_at", time.Now()).
 		Where("id = ?", id).
-		Where("deleted_at is null").
 		Exec()
 	if err != nil {
 		return sorry.Err(err)
@@ -160,38 +159,4 @@ func (pg *PGBarber) GetCheckins(barberID *int, params *utils.RequestParams) (*ba
 		Next:  next,
 		Count: count,
 	}, nil
-}
-
-// AddService adds a new service for a barber
-func (pg *PGBarber) AddService(barberID *int, services []int) error {
-	insert := pg.DB.Builder.
-		Insert("t_barber_service").
-		Columns("barber_id", "service_id")
-
-	for i := range services {
-		insert = insert.Values(barberID, services[i])
-	}
-
-	_, err := insert.Exec()
-	if err != nil {
-		return sorry.Err(err)
-	}
-
-	return nil
-}
-
-// DeleteService deletes a service from a barber
-func (pg *PGBarber) DeleteService(barberID, serviceID *int) error {
-	_, err := pg.DB.Builder.
-		Update("t_barber_service").
-		Set("deleted_at", time.Now()).
-		Where("service_id = ?", serviceID).
-		Where("barber_id = ?", barberID).
-		Where("deleted_at is null").
-		Exec()
-	if err != nil {
-		return sorry.Err(err)
-	}
-
-	return nil
 }

@@ -12,5 +12,4 @@ type IService interface {
 	Add(ser *Service) (*int, error)
 	Update(id *int, ser *Service) error
 	Delete(id *int) error
-	AddPriceHistory(id *int, price *float64) error
 }

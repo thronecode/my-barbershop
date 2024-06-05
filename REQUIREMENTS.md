@@ -14,8 +14,6 @@
 
     - **Gerenciamento de serviços:**
         - Criar, listar, atualizar e remover serviços.
-        - Histórico de preço de serviços.
-        - Filtro de barbeiros que realizam um serviço.
 
     - **TODO: Cadastro de atendimentos:**
         - Criar, listar, iniciar, concluir e remover atendimentos.
@@ -67,13 +65,6 @@ erDiagram
         datetime deleted_at
     }
     
-    SERVICE_PRICE_HISTORY {
-        int id
-        int service_id
-        float price
-        datetime date_time
-    }
-    
     TODO_APPOINTMENT {
         int id
         int barber_id
@@ -96,7 +87,6 @@ erDiagram
     SERVICE ||--o{ TODO_APPOINTMENT : "included in"
     BARBER ||--o{ TODO_SCHEDULE : "works during"
     BARBER ||--o{ BARBER_CHECKIN : "checkin"
-    SERVICE ||--o{ SERVICE_PRICE_HISTORY : "price history"
 ```
 
 ### Rotas da API
@@ -156,15 +146,6 @@ erDiagram
 - `GET /api/barber/:id/checkin`
     - Descrição: Listar check-ins de um barbeiro.
     - Resposta: Lista de check-ins.
-
-- `POST /api/barber/:id/service`
-    - Descrição: Adicionar um serviço para um barbeiro.
-    - Resposta: Status de sucesso.
-
-- `DELETE /api/barber/:id/service/:service_id`
-  - Descrição: Remover um serviço de um barbeiro.
-  - Resposta: Status de sucesso.
-
 
 #### Rotas para Serviços
 
