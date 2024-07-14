@@ -1,3 +1,4 @@
+
 # My BarberShop Backend
 
 Este é o backend da aplicação My BarberShop, desenvolvido com Go e PostgreSQL.
@@ -19,33 +20,45 @@ Este é o backend da aplicação My BarberShop, desenvolvido com Go e PostgreSQL
 
 ## Configuração
 
-1. Ajuste um arquivo `config.json` na raz do projeto com as configurações do seu banco postgres e sua key JWT:
-   ```json
-    {
-      "auth": {
-        "secret": "your_secret_here"
-      },
-      "databases": [
-        {
-          "driver": "postgres",
-          "host": "localhost",
-          "port": "5432",
-          "user": "user1",
-          "password": "password1",
-          "dbname": "db1",
-          "readonly": false
-        },
-        {
-          "driver": "postgres",
-          "host": "localhost",
-          "port": "5432",
-          "user": "user1",
-          "password": "password1",
-          "dbname": "db1",
-          "readonly": true
-        }
-      ]
-    }
+1. Defina as variáveis de ambiente no seu sistema ou crie um arquivo `.env` na raiz do projeto com as configurações do seu banco postgres e sua key JWT:
+
+   ```env
+   AUTH_SECRET=your_secret_here
+   DB1_DRIVER=postgres
+   DB1_HOST=localhost
+   DB1_PORT=5432
+   DB1_USER=user1
+   DB1_PASSWORD=password1
+   DB1_DBNAME=db1
+   DB1_READONLY=false
+   DB2_DRIVER=postgres
+   DB2_HOST=localhost
+   DB2_PORT=5432
+   DB2_USER=user1
+   DB2_PASSWORD=password1
+   DB2_DBNAME=db1
+   DB2_READONLY=true
+   ```
+
+   Se estiver usando o arquivo `.env`, você pode usar a biblioteca `godotenv` para carregar essas variáveis de ambiente automaticamente:
+
+   ```bash
+   go get github.com/joho/godotenv
+   ```
+
+   E adicione o seguinte código ao início do seu `main.go`:
+
+   ```go
+   import (
+       "log"
+       "github.com/joho/godotenv"
+   )
+
+   func init() {
+       if err := godotenv.Load(); err != nil {
+           log.Println("No .env file found")
+       }
+   }
    ```
 
 ## Executando o Projeto
