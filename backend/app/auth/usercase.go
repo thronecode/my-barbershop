@@ -5,6 +5,8 @@ import (
 	"backend/domain/admin"
 	"backend/sorry"
 	"backend/utils"
+
+	"net/http"
 )
 
 // Login is the function that logs the user in
@@ -22,8 +24,8 @@ func Login(credentials *LoginInput) (*LoginOutput, error) {
 		return nil, sorry.Err(err)
 	}
 
-	if adm == nil || utils.CheckPassword(*adm.Password, *credentials.Password) {
-		return nil, sorry.NewErr("invalid credentials")
+	if adm == nil || !utils.CheckPassword(*adm.Password, *credentials.Password) {
+		return nil, sorry.NewErr("invalid credentials", http.StatusUnauthorized)
 	}
 
 	token, err := utils.GenerateToken(*adm.Username, *adm.ID)

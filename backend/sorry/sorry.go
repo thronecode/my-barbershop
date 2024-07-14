@@ -91,13 +91,15 @@ func fromErr(rawError error) error {
 
 		case strconv.ErrSyntax:
 			msg, code = err.Error(), ParseErrorCode
-		}
 
+		default:
+			msg, code, httpStatusCode = rawError.Error(), DefaultErrorCode, http.StatusBadRequest
+		}
 	case nil:
 		return nil
 
 	default:
-		msg, code, httpStatusCode = rawError.Error(), 0, http.StatusBadRequest
+		msg, code, httpStatusCode = rawError.Error(), DefaultErrorCode, http.StatusBadRequest
 	}
 
 	return &Error{
@@ -125,12 +127,17 @@ func Wrap(err error, message string) error {
 }
 
 // NewErr creates an annotated error instance with default values
-func NewErr(message string) error {
+func NewErr(message string, statusCode ...int) error {
+	sc := http.StatusBadRequest
+	if len(statusCode) > 0 {
+		sc = statusCode[0]
+	}
+
 	return Err(&Error{
 		Msg:        message,
 		Err:        errors.Errorf("Inline error message: '%s'. See the stack trace of the error for additional information.", message),
 		Code:       DefaultErrorCode,
-		StatusCode: http.StatusBadRequest,
+		StatusCode: sc,
 	})
 }
 

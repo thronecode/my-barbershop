@@ -45,6 +45,10 @@ func (r *repository) Get(id *int) (*Service, error) {
 		return nil, err
 	}
 
+	if ser == nil {
+		return nil, nil
+	}
+
 	res := new(Service)
 	if err := utils.ConvertStruct(ser, res); err != nil {
 		return nil, err
@@ -58,6 +62,10 @@ func (r *repository) GetByName(name *string) (*Service, error) {
 	ser, err := r.pg.GetByName(name)
 	if err != nil {
 		return nil, err
+	}
+
+	if ser == nil {
+		return nil, nil
 	}
 
 	res := new(Service)

@@ -15,15 +15,13 @@ func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": sorry.NewErr("Authorization header required")})
-			c.Abort()
+			sorry.Handling(c, sorry.NewErr("Authorization header required", http.StatusUnauthorized))
 			return
 		}
 
 		token := strings.TrimPrefix(authHeader, "Bearer ")
 		if !utils.IsValidToken(token) {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": sorry.NewErr("Invalid token")})
-			c.Abort()
+			sorry.Handling(c, sorry.NewErr("Invalid token", http.StatusUnauthorized))
 			return
 		}
 

@@ -69,7 +69,7 @@ func (pg *PGAdmin) GetByUsername(username *string) (*admin.Admin, error) {
 	var adm admin.Admin
 
 	err := pg.DB.Builder.
-		Select("adm.id as id", "adm.username as username", "adm.password as password").
+		Select(utils.GetColumns(admin.Admin{}, nil)...).
 		From("t_admin adm").
 		Where("username = ?", username).
 		Where("deleted_at is null").

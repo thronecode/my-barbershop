@@ -45,6 +45,10 @@ func (r *repository) Get(id *int) (*Admin, error) {
 		return nil, err
 	}
 
+	if data == nil {
+		return nil, nil
+	}
+
 	res := new(Admin)
 	if err = utils.ConvertStruct(data, res); err != nil {
 		return nil, err
@@ -58,6 +62,10 @@ func (r *repository) GetByUsername(username *string) (*Admin, error) {
 	data, err := r.pg.GetByUsername(username)
 	if err != nil {
 		return nil, err
+	}
+
+	if data == nil {
+		return nil, nil
 	}
 
 	res := new(Admin)

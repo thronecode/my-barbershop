@@ -45,6 +45,10 @@ func (r *repository) Get(id *int) (*Barber, error) {
 		return nil, err
 	}
 
+	if data == nil {
+		return nil, nil
+	}
+
 	res := new(Barber)
 	if err = utils.ConvertStruct(data, res); err != nil {
 		return nil, err

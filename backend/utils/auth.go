@@ -33,7 +33,7 @@ func GenerateToken(username string, id int) (string, error) {
 		"exp":      time.Now().Add(time.Hour * 24 * 7).Unix(),
 	})
 
-	tokenString, err := token.SignedString(config.GetConfig().Auth.Secret)
+	tokenString, err := token.SignedString([]byte(config.GetConfig().Auth.Secret))
 	if err != nil {
 		return "", err
 	}
@@ -84,7 +84,7 @@ func decodeToken(tokenString string) (*jwt.Token, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, jwt.NewValidationError("invalid signing method", jwt.ValidationErrorSignatureInvalid)
 		}
-		return config.GetConfig().Auth.Secret, nil
+		return []byte(config.GetConfig().Auth.Secret), nil
 	})
 	if err != nil {
 		return nil, err

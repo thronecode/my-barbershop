@@ -5,6 +5,7 @@ import (
 	"backend/sorry"
 
 	"database/sql"
+	"fmt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/jackc/pgx/v5/stdlib"
@@ -15,7 +16,7 @@ type Postgres struct {
 }
 
 func (p *Postgres) Open(cfg *config.DatabaseConfig) error {
-	pgxPoolConfig, err := pgxpool.ParseConfig("postgres://" + cfg.User + ":" + cfg.Password + "@" + cfg.Host + ":" + cfg.Port + "/" + cfg.Port + "?sslmode=disable")
+	pgxPoolConfig, err := pgxpool.ParseConfig(fmt.Sprintf("postgres://%s:%s@%s:%s/%s?sslmode=%s", cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.DBName, cfg.SSLMode))
 	if err != nil {
 		return sorry.Err(err)
 	}
