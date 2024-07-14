@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  db:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    image: mybarbershop-db:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mybarbershopdb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d mybarbershopdb" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: mybarbershop-backend:latest
+    ports:
+      - "4002:4002"
+    environment:
+      - AUTH_SECRET=devvvvvvvvvvvvv
+      - DB1_DRIVER=postgres
+      - DB1_HOST=db
+      - DB1_PORT=5432
+      - DB1_USER=user
+      - DB1_PASSWORD=password
+      - DB1_DBNAME=mybarbershopdb
+      - DB1_READONLY=false
+      - DB1_SSLMODE=disable
+      - DB2_DRIVER=postgres
+      - DB2_HOST=db
+      - DB2_PORT=5432
+      - DB2_USER=user
+      - DB2_PASSWORD=password
+      - DB2_DBNAME=mybarbershopdb
+      - DB2_READONLY=true
+      - DB2_SSLMODE=disable
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  db_data:
