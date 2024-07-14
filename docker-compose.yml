@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: mybarbershop-backend:latest
+    ports:
+      - "4002:4002"
+    environment:
+      - AUTH_SECRET=devvvvvvvvvvvvv
+      - DB1_DRIVER=postgres
+      - DB1_HOST=db
+      - DB1_PORT=5432
+      - DB1_USER=user
+      - DB1_PASSWORD=password
+      - DB1_DBNAME=mybarbershopdb
+      - DB1_READONLY=false
+      - DB1_SSLMODE=disable
+      - DB2_DRIVER=postgres
+      - DB2_HOST=db
+      - DB2_PORT=5432
+      - DB2_USER=user
+      - DB2_PASSWORD=password
+      - DB2_DBNAME=mybarbershopdb
+      - DB2_READONLY=true
+      - DB2_SSLMODE=disable
+    depends_on:
+      - db
+
+  db:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mybarbershopdb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+volumes:
+  db_data:
