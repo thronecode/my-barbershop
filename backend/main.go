@@ -12,6 +12,7 @@ import (
 	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -24,9 +25,15 @@ import (
 // @BasePath /api
 
 func main() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+	}
+
 	if err := config.LoadConfig(); err != nil {
 		log.Fatalf("Error loading config: %v", err)
 	}
+
+	log.Println(config.GetConfig())
 
 	if err := database.OpenConnections(); err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
