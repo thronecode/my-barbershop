@@ -1,6 +1,25 @@
 version: '3.8'
 
 services:
+  db:
+    build:
+      context: ./database
+      dockerfile: Dockerfile
+    image: mybarbershop-db:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: mybarbershopdb
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U user -d mybarbershopdb" ]
+      interval: 5s
+      timeout: 10s
+      retries: 3
+
   backend:
     build:
       context: ./backend
@@ -27,19 +46,8 @@ services:
       - DB2_READONLY=true
       - DB2_SSLMODE=disable
     depends_on:
-      - db
-
-  db:
-    image: postgres:latest
-    ports:
-      - "5432:5432"
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: mybarbershopdb
-    volumes:
-      - db_data:/var/lib/postgresql/data
-      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      db:
+        condition: service_healthy
 
 volumes:
   db_data:
