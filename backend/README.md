@@ -40,27 +40,6 @@ Este é o backend da aplicação My BarberShop, desenvolvido com Go e PostgreSQL
    DB2_READONLY=true
    ```
 
-   Se estiver usando o arquivo `.env`, você pode usar a biblioteca `godotenv` para carregar essas variáveis de ambiente automaticamente:
-
-   ```bash
-   go get github.com/joho/godotenv
-   ```
-
-   E adicione o seguinte código ao início do seu `main.go`:
-
-   ```go
-   import (
-       "log"
-       "github.com/joho/godotenv"
-   )
-
-   func init() {
-       if err := godotenv.Load(); err != nil {
-           log.Println("No .env file found")
-       }
-   }
-   ```
-
 ## Executando o Projeto
 
 Para iniciar o servidor, execute:
