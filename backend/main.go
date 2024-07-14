@@ -33,8 +33,6 @@ func main() {
 		log.Fatalf("Error loading config: %v", err)
 	}
 
-	log.Println(config.GetConfig())
-
 	if err := database.OpenConnections(); err != nil {
 		log.Fatalf("Error connecting to database: %v", err)
 	}
