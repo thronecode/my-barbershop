@@ -1,4 +1,4 @@
-module backend
+module github.com/thronecode/my-barbershop/backend
 
 go 1.21.1
 

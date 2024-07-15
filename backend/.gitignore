@@ -2,7 +2,7 @@
 /.idea
 
 #binary backend
-backend
+cmd/server
 
 # .env file
-.env
+config/.env
