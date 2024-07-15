@@ -1,2 +1,11 @@
 #idea
-/.idea
+.idea
+backend/.idea
+frontend/.idea
+database/.idea
+
+#binary backend
+backend/cmd/server
+
+# .env file
+backend/config/.env

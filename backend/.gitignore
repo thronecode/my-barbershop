@@ -1,8 +1,0 @@
-#idea
-/.idea
-
-#binary backend
-cmd/server
-
-# .env file
-config/.env

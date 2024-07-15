@@ -45,7 +45,7 @@ Este é o backend da aplicação My BarberShop, desenvolvido com Go e PostgreSQL
 Para iniciar o servidor, execute:
 
 ```bash
-go run main.go
+cd cmd/server && go run main.go
 ```
 
 ## Testes
