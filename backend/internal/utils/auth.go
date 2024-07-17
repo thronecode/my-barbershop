@@ -72,7 +72,7 @@ func GetSessionData(tokenString string) (SessionData, error) {
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		data.ID = claims["id"].(int)
+		data.ID = int(claims["id"].(float64))
 		data.Username = claims["username"].(string)
 	}
 

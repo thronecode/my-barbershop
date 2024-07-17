@@ -64,19 +64,19 @@ func fromErr(rawError error) error {
 
 	switch err := rawError.(type) {
 	case *json.UnmarshalTypeError:
-		msg, code = rawError.Error(), JSONErrorCode
+		msg, code, httpStatusCode = err.Error(), JSONErrorCode, http.StatusBadRequest
 
 	case validator.ValidationErrors:
-		msg, code = rawError.Error(), ValidationErroCode
+		msg, code, httpStatusCode = err.Error(), ValidationErroCode, http.StatusBadRequest
 
 	case *reflect.ValueError, *strconv.NumError, *time.ParseError:
-		msg, code = rawError.Error(), ParseErrorCode
+		msg, code, httpStatusCode = err.Error(), ParseErrorCode, http.StatusBadRequest
 
 	case *pgconn.PgError:
-		msg, code = rawError.Error(), PgxErrorCode
+		msg, code, httpStatusCode = err.Error(), PgxErrorCode, http.StatusBadRequest
 
 	case *url.Error:
-		msg, code = rawError.Error(), HTTPRequestErrorCode
+		msg, code, httpStatusCode = err.Error(), HTTPRequestErrorCode, http.StatusBadRequest
 
 	case *Error:
 		rawError, msg, code, httpStatusCode = err, err.Msg, err.Code, err.StatusCode
@@ -87,19 +87,19 @@ func fromErr(rawError error) error {
 			msg, code, httpStatusCode = err.Error(), DefaultErrorCode, http.StatusNotFound
 
 		case io.EOF:
-			msg, code = err.Error(), DefaultErrorCode
+			msg, code, httpStatusCode = err.Error(), DefaultErrorCode, http.StatusBadRequest
 
 		case strconv.ErrSyntax:
-			msg, code = err.Error(), ParseErrorCode
+			msg, code, httpStatusCode = err.Error(), ParseErrorCode, http.StatusBadRequest
 
 		default:
-			msg, code, httpStatusCode = rawError.Error(), DefaultErrorCode, http.StatusBadRequest
+			msg, code, httpStatusCode = err.Error(), DefaultErrorCode, http.StatusBadRequest
 		}
 	case nil:
 		return nil
 
 	default:
-		msg, code, httpStatusCode = rawError.Error(), DefaultErrorCode, http.StatusBadRequest
+		msg, code, httpStatusCode = err.Error(), DefaultErrorCode, http.StatusBadRequest
 	}
 
 	return &Error{

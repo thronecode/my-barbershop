@@ -2,16 +2,15 @@ package middleware
 
 import (
 	"github.com/thronecode/my-barbershop/backend/internal/sorry"
-	"github.com/thronecode/my-barbershop/backend/internal/utils"
-
-	"github.com/gin-gonic/gin"
 
 	"net/http"
 	"strings"
+
+	"github.com/gin-gonic/gin"
 )
 
 // AuthMiddleware verifies the authentication token
-func AuthMiddleware() gin.HandlerFunc {
+func AuthMiddleware(validateToken func(string) bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -20,7 +19,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		token := strings.TrimPrefix(authHeader, "Bearer ")
-		if !utils.IsValidToken(token) {
+		if !validateToken(token) {
 			sorry.Handling(c, sorry.NewErr("Invalid token", http.StatusUnauthorized))
 			return
 		}

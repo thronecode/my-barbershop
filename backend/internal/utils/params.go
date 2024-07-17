@@ -87,40 +87,45 @@ func (p *RequestParams) ConvertFilters(structure any) error {
 	}
 
 	for i := 0; i < structureRt.NumField(); i++ {
-		var (
-			field  = structureRt.Field(i)
-			values []string
-		)
+		field := structureRt.Field(i)
+		tag := structureRt.Type().Field(i).Tag.Get(converterTag)
 
-		key := structureRt.Type().Field(i).Tag.Get(converterTag)
-		if field.IsNil() || key == "" {
+		if tag == "" {
 			continue
 		}
 
-		switch value := field.Interface().(type) {
-		case *int, *int8, *int32, *int64, *bool, *float32, *float64, *string:
-			values = append(values, fmt.Sprint(field.Elem().Interface()))
+		var values []string
 
-		case []int, []int8, []int32, []int64, []bool, []float32, []float64, []string:
-			rt := reflect.ValueOf(value)
+		// Handle pointer types
+		if field.Kind() == reflect.Ptr {
+			if field.IsNil() {
+				continue
+			}
+			field = field.Elem()
+		}
 
-			for j := 0; j < rt.Len(); j++ {
-				switch valor := rt.Index(j).Interface().(type) {
+		switch field.Kind() {
+		case reflect.Int, reflect.Int8, reflect.Int32, reflect.Int64, reflect.Bool, reflect.Float32, reflect.Float64, reflect.String:
+			values = append(values, fmt.Sprint(field.Interface()))
+		case reflect.Slice:
+			for j := 0; j < field.Len(); j++ {
+				val := field.Index(j).Interface()
+				switch val := val.(type) {
 				case *time.Time:
-					values = append(values, valor.Format(time.RFC3339))
+					values = append(values, val.Format(time.RFC3339))
 				default:
-					values = append(values, fmt.Sprint(rt.Index(j).Interface()))
+					values = append(values, fmt.Sprint(val))
 				}
 			}
-
-		case *time.Time:
-			values = append(values, value.Format(time.RFC3339))
-
+		case reflect.Struct:
+			if field.Type() == reflect.TypeOf(time.Time{}) {
+				values = append(values, field.Interface().(time.Time).Format(time.RFC3339))
+			}
 		default:
 			continue
 		}
 
-		p.Filters[key] = values
+		p.Filters[tag] = values
 	}
 
 	return nil

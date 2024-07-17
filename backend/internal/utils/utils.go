@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
-	"time"
 )
 
 // IsStringInSlice checks if a string is in a slice
@@ -35,7 +34,6 @@ func ConvertStruct(in interface{}, out interface{}) error {
 
 	for s := 0; s < elemSrc.NumField(); s++ {
 		srcField := elemSrc.Type().Field(s)
-
 		srcKey := srcField.Tag.Get(tagName)
 		if srcKey == "" {
 			continue
@@ -46,7 +44,6 @@ func ConvertStruct(in interface{}, out interface{}) error {
 
 		for d := 0; d < elemDst.NumField(); d++ {
 			dstField := elemDst.Type().Field(d)
-
 			dstKey := dstField.Tag.Get(tagName)
 			if dstKey == "" || dstKey != srcKey {
 				continue
@@ -56,61 +53,15 @@ func ConvertStruct(in interface{}, out interface{}) error {
 				return errors.New("destination is not settable")
 			}
 
+			dstValue := elemDst.Field(d)
+
 			if srcField.Type != dstField.Type {
-				var (
-					tSrc, tDst string
-				)
-
-				if srcField.Type.String()[0] == '*' {
-					tSrc = srcField.Type.Elem().String()
-				} else {
-					tSrc = srcField.Type.String()
-				}
-
-				if dstField.Type.String()[0] == '*' {
-					tDst = dstField.Type.Elem().String()
-				} else {
-					tDst = dstField.Type.String()
-				}
-
-				if dstField.Type.String() == "*time.Time" {
-					tDst = dstField.Type.String()
-				}
-
-				val, err := ConvertStringToTime(elemSrc.Field(s).Interface(), tSrc, tDst)
-				if err != nil {
-					return fmt.Errorf("was not possible to convert field %s: %s", srcField.Name, err.Error())
-				}
-
-				v := reflect.ValueOf(val)
-				elemDst.Field(d).Set(v)
+				return fmt.Errorf("type mismatch: %s != %s", srcField.Type, dstField.Type)
 			} else {
-				elemDst.Field(d).Set(elemSrc.Field(s))
+				dstValue.Set(elemSrc.Field(s))
 			}
 		}
 	}
 
 	return nil
-}
-
-// ConvertStringToTime converts strings in time pointer
-func ConvertStringToTime(value interface{}, from, to string) (output interface{}, err error) {
-	if from == "string" {
-		if to == "*time.Time" {
-			var val string
-			if v, ok := value.(*string); ok {
-				if v == nil {
-					return nil, nil
-				}
-				val = *v
-			} else if v, ok := value.(string); ok {
-				val = v
-			} else {
-				return nil, nil
-			}
-			return time.Parse(time.RFC3339, val)
-		}
-	}
-
-	return nil, errors.New("feature not supported")
 }

@@ -2,13 +2,14 @@ package barber
 
 import (
 	"github.com/thronecode/my-barbershop/backend/internal/middleware"
+	"github.com/thronecode/my-barbershop/backend/internal/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
 func RegisterRoutes(router *gin.Engine) {
 	barber := router.Group("/api/barber")
-	barber.Use(middleware.AuthMiddleware())
+	barber.Use(middleware.AuthMiddleware(utils.IsValidToken))
 	{
 		barber.POST("/", add)
 		barber.GET("/", list)

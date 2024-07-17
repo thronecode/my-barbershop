@@ -28,23 +28,23 @@ services:
     ports:
       - "4002:4002"
     environment:
-      - AUTH_SECRET=devvvvvvvvvvvvv
-      - DB1_DRIVER=postgres
-      - DB1_HOST=db
-      - DB1_PORT=5432
-      - DB1_USER=user
-      - DB1_PASSWORD=password
-      - DB1_DBNAME=mybarbershopdb
-      - DB1_READONLY=false
-      - DB1_SSLMODE=disable
-      - DB2_DRIVER=postgres
-      - DB2_HOST=db
-      - DB2_PORT=5432
-      - DB2_USER=user
-      - DB2_PASSWORD=password
-      - DB2_DBNAME=mybarbershopdb
-      - DB2_READONLY=true
-      - DB2_SSLMODE=disable
+      - MYBARBERSHOP_AUTH_SECRET=devvvvvvvvvvvvv
+      - MYBARBERSHOP_DB1_DRIVER=postgres
+      - MYBARBERSHOP_DB1_HOST=db
+      - MYBARBERSHOP_DB1_PORT=5432
+      - MYBARBERSHOP_DB1_USER=user
+      - MYBARBERSHOP_DB1_PASSWORD=password
+      - MYBARBERSHOP_DB1_DBNAME=mybarbershopdb
+      - MYBARBERSHOP_DB1_READONLY=false
+      - MYBARBERSHOP_DB1_SSLMODE=disable
+      - MYBARBERSHOP_DB2_DRIVER=postgres
+      - MYBARBERSHOP_DB2_HOST=db
+      - MYBARBERSHOP_DB2_PORT=5432
+      - MYBARBERSHOP_DB2_USER=user
+      - MYBARBERSHOP_DB2_PASSWORD=password
+      - MYBARBERSHOP_DB2_DBNAME=mybarbershopdb
+      - MYBARBERSHOP_DB2_READONLY=true
+      - MYBARBERSHOP_DB2_SSLMODE=disable
     depends_on:
       db:
         condition: service_healthy

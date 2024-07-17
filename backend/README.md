@@ -23,21 +23,21 @@ Este é o backend da aplicação My BarberShop, desenvolvido com Go e PostgreSQL
 1. Defina as variáveis de ambiente no seu sistema ou crie um arquivo `.env` na raiz do projeto com as configurações do seu banco postgres e sua key JWT:
 
    ```env
-   AUTH_SECRET=your_secret_here
-   DB1_DRIVER=postgres
-   DB1_HOST=localhost
-   DB1_PORT=5432
-   DB1_USER=user1
-   DB1_PASSWORD=password1
-   DB1_DBNAME=db1
-   DB1_READONLY=false
-   DB2_DRIVER=postgres
-   DB2_HOST=localhost
-   DB2_PORT=5432
-   DB2_USER=user1
-   DB2_PASSWORD=password1
-   DB2_DBNAME=db1
-   DB2_READONLY=true
+   MYBARBERSHOP_AUTH_SECRET=your_secret_here
+   MYBARBERSHOP_DB1_DRIVER=postgres
+   MYBARBERSHOP_DB1_HOST=localhost
+   MYBARBERSHOP_DB1_PORT=5432
+   MYBARBERSHOP_DB1_USER=user1
+   MYBARBERSHOP_DB1_PASSWORD=password1
+   MYBARBERSHOP_DB1_DBNAME=db1
+   MYBARBERSHOP_DB1_READONLY=false
+   MYBARBERSHOP_DB2_DRIVER=postgres
+   MYBARBERSHOP_DB2_HOST=localhost
+   MYBARBERSHOP_DB2_PORT=5432
+   MYBARBERSHOP_DB2_USER=user1
+   MYBARBERSHOP_DB2_PASSWORD=password1
+   MYBARBERSHOP_DB2_DBNAME=db1
+   MYBARBERSHOP_DB2_READONLY=true
    ```
 
 ## Executando o Projeto
